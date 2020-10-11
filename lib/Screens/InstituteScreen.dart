@@ -1,3 +1,5 @@
+import 'package:educational_institute/Screens/MainScreen.dart';
+import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:flutter/material.dart';
 
 class InstituteScreen extends StatelessWidget {
@@ -6,7 +8,12 @@ class InstituteScreen extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Text("this is institute screen"),
+          child: RaisedButton(
+            child: Text('Sign Out'),
+            onPressed: () {
+              Navigator.pop(context, null);
+            },
+          ),
         ),
       ),
     );

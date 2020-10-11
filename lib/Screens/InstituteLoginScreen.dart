@@ -16,7 +16,7 @@ class _InstituteLogInState extends State<InstituteLogIn> {
       IconData icon, String txt, double size, bool textObscure) {
     return Padding(
       padding: EdgeInsets.only(left: size, right: size),
-      child: TextField(
+      child: TextFormField(
         keyboardType: txt == 'Password' ? TextInputType.emailAddress : null,
         controller: txt == 'Password' ? passController : idController,
         //this is for password textfield
@@ -114,10 +114,10 @@ class _InstituteLogInState extends State<InstituteLogIn> {
                             child: RaisedButton(
                               color: Colors.blue.shade900,
                               onPressed: () {
-                                NavigatingScreen().fromInstituteLogInScreen(
-                                    context,
-                                    idController.text,
-                                    passController.text);
+                                AuthWrapper().fromInstituteLogInScreen(context,
+                                    idController.text, passController.text);
+                                idController.clear();
+                                passController.clear();
                               },
                               shape: RoundedRectangleBorder(
 

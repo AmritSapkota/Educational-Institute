@@ -13,7 +13,7 @@ class MainScreen extends StatelessWidget {
         textColor: txtcolor,
         onPressed: () {
           //navigatingscreen will handel screen navigation
-          NavigatingScreen().fromMainScreen(buttonType, context);
+          AuthWrapper().fromMainScreen(buttonType, context);
         },
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18.0),
