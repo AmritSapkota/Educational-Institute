@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "520443031775",
+    "firebase_url": "https://educational-institute-ca530.firebaseio.com",
+    "project_id": "educational-institute-ca530",
+    "storage_bucket": "educational-institute-ca530.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:520443031775:android:1dc4c762cbea0b881ab96a",
+        "android_client_info": {
+          "package_name": "EducationalInstitute.educational_institute"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "520443031775-ghgri78j1ov3n8aph9fn1ks954pcfu3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGUuUMnASgnu7KVtrdwK6slQw_3LQEvwg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "520443031775-ghgri78j1ov3n8aph9fn1ks954pcfu3f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

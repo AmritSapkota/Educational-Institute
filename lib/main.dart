@@ -1,3 +1,4 @@
+import 'package:educational_institute/Screens/MainScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -7,13 +8,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.lightGreen,
-        appBar: AppBar(
-          title: Text('Educational Institute'),
-        ),
-      ),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: MainScreen());
   }
 }
