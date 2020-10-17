@@ -1,3 +1,4 @@
+import 'package:educational_institute/Screens/lib/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -27,15 +28,44 @@ class StudentScreen extends StatelessWidget {
         endDrawer: Drawer(
           child: ListView(children: <Widget>[
             ListTile(
-              leading: Icon(Icons.shopping_cart),
-              title: Text('Checkout'),
+              leading: Icon(Icons.arrow_back),
+              title: Text(''),
               onTap: () {
-                Navigator.pushNamed(context, '/home');
+                Navigator.pop(context);
               },
             ),
             ListTile(
-              leading: Icon(Icons.report),
-              title: Text('Transactions'),
+              leading: Icon(Icons.search),
+              title: Text('University Search'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.language),
+              title: Text('Language Courses'),
+              onTap: () {
+                Navigator.pushNamed(context, '/transactionsList');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.merge_type),
+              title: Text('Seminars'),
+              onTap: () {
+                Navigator.pushNamed(context, '/transactionsList');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.group),
+              title: Text('About Us'),
+              onTap: () {
+                Navigator.pushNamed(context, '/transactionsList');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text(''
+                  'Settings'),
               onTap: () {
                 Navigator.pushNamed(context, '/transactionsList');
               },
@@ -72,7 +102,7 @@ class StudentScreen extends StatelessWidget {
               maxWidth: size.width,
             ),
             decoration: BoxDecoration(
-              color: Colors.blue[300],
+              color: PrimaryColor[300],
             ),
             child: Column(
               children: [

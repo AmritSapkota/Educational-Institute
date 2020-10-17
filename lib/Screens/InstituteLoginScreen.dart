@@ -11,6 +11,20 @@ class InstituteLogIn extends StatefulWidget {
 class _InstituteLogInState extends State<InstituteLogIn> {
   static final idController = TextEditingController();
   static final passController = TextEditingController();
+  bool isUserNameValidate = false;
+
+  bool validateTextField(String userInput) {
+    if (userInput.isEmpty) {
+      setState(() {
+        isUserNameValidate = true;
+      });
+      return false;
+    }
+    setState(() {
+      isUserNameValidate = false;
+    });
+    return true;
+  }
 
   Padding loginTextField(
       IconData icon, String txt, double size, bool textObscure) {
@@ -27,9 +41,10 @@ class _InstituteLogInState extends State<InstituteLogIn> {
             icon,
             color: Colors.blue,
           ),
+          errorText: isUserNameValidate ? '* required' : null,
+
           hintText: txt,
           hintStyle: TextStyle(color: Colors.blue),
-
           //this is how we fill background color
           filled: true,
           fillColor: Colors.grey[100],
@@ -114,6 +129,8 @@ class _InstituteLogInState extends State<InstituteLogIn> {
                             child: RaisedButton(
                               color: Colors.blue.shade900,
                               onPressed: () {
+                                validateTextField(idController.text);
+                                validateTextField(passController.text);
                                 AuthWrapper().fromInstituteLogInScreen(context,
                                     idController.text, passController.text);
                                 idController.clear();

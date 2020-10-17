@@ -37,14 +37,14 @@ class AuthWrapper extends StatelessWidget {
     }
   }
 
-  Future<void> fromInstituteLogInScreen(
+  Future<Widget> fromInstituteLogInScreen(
       BuildContext context, String mail, String pass) async {
     // ignore: unrelated_type_equality_checks
     if (await AuthServices(FirebaseAuth.instance).singIn(mail, pass) == true) {
       Navigator.push(context,
           new MaterialPageRoute(builder: (context) => new InstituteScreen()));
     } else
-      return;
+      return null;
   }
 
   @override
