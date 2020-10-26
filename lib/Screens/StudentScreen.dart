@@ -16,6 +16,9 @@ class StudentScreen extends StatelessWidget {
           minHeight: size.height * 0.3,
           minWidth: size.width,
         ),
+        child: Center(
+          child: Text('Post Comming Soon...'),
+        ),
       ),
     );
   }

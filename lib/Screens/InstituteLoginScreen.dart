@@ -36,6 +36,16 @@ class _InstituteLogInState extends State<InstituteLogIn> {
         //this is for password textfield
         obscureText: textObscure,
         decoration: InputDecoration(
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+          ),
+
+          //focus border to set border property when clicked
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+          ),
           border: InputBorder.none,
           prefixIcon: Icon(
             icon,
@@ -50,16 +60,6 @@ class _InstituteLogInState extends State<InstituteLogIn> {
           fillColor: Colors.grey[100],
 
           //making boarder of textfield
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-          ),
-
-          //focus border to set border property when clicked
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-          ),
         ),
       ),
     );
@@ -133,11 +133,8 @@ class _InstituteLogInState extends State<InstituteLogIn> {
                                 validateTextField(passController.text);
                                 AuthWrapper().fromInstituteLogInScreen(context,
                                     idController.text, passController.text);
-                                idController.clear();
-                                passController.clear();
                               },
                               shape: RoundedRectangleBorder(
-
                                   //for rounded border
                                   borderRadius:
                                       BorderRadius.circular(size.height * 0.02),

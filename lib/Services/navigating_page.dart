@@ -2,6 +2,9 @@ import 'package:educational_institute/Screens/InstituteLoginScreen.dart';
 import 'package:educational_institute/Screens/InstituteScreen.dart';
 import 'package:educational_institute/Screens/MainScreen.dart';
 import 'package:educational_institute/Screens/StudentScreen.dart';
+import 'package:educational_institute/Screens/Subscreens/manage_post.dart';
+import 'package:educational_institute/Screens/Subscreens/profile_settings.dart';
+import 'package:educational_institute/Screens/Subscreens/upload_post.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +40,21 @@ class AuthWrapper extends StatelessWidget {
     }
   }
 
+  void fromInstitutescreenManagePost(BuildContext context) {
+    Navigator.push(
+        context, new MaterialPageRoute(builder: (context) => new ManagePost()));
+  }
+
+  void fromInstituteScreenProfileSettings(BuildContext context) {
+    Navigator.push(context,
+        new MaterialPageRoute(builder: (context) => new ChangeProfile()));
+  }
+
+  void fromInstituteScreenAddPost(BuildContext context) {
+    Navigator.push(
+        context, new MaterialPageRoute(builder: (context) => new UploadPost()));
+  }
+
   Future<Widget> fromInstituteLogInScreen(
       BuildContext context, String mail, String pass) async {
     // ignore: unrelated_type_equality_checks
@@ -44,7 +62,22 @@ class AuthWrapper extends StatelessWidget {
       Navigator.push(context,
           new MaterialPageRoute(builder: (context) => new InstituteScreen()));
     } else
-      return null;
+      return await showDialog(
+        context: context,
+        builder: (context) => new AlertDialog(
+          title: new Text('Login Failed!!'),
+          content: Text('Please check your id/password.'),
+          actions: <Widget>[
+            new FlatButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true)
+                    .pop(); // dismisses only the dialog and returns nothing
+              },
+              child: new Text('Retry'),
+            ),
+          ],
+        ),
+      );
   }
 
   @override
