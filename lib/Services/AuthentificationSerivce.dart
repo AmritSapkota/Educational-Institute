@@ -1,4 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+
+String uid;
 
 class AuthServices {
   final FirebaseAuth _firebaseAuth;
@@ -13,8 +16,10 @@ class AuthServices {
 
   Future<bool> singIn(String email, String password) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      var cuser = await _firebaseAuth.signInWithEmailAndPassword(
           email: (email), password: password);
+      uid = cuser.user.uid;
+
       return true;
     } on FirebaseAuthException catch (e) {
       print(e.message);

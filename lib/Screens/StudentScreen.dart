@@ -1,80 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:educational_institute/Screens/Student/Drawer/about_us.dart';
+import 'package:educational_institute/Screens/Student/Drawer/language_course.dart';
+import 'package:educational_institute/Screens/Student/Drawer/serach%20university.dart';
+import 'package:educational_institute/Screens/Student/Drawer/settings.dart';
 import 'package:educational_institute/Screens/lib/colors.dart';
+import 'package:educational_institute/models/post_model.dart';
+import 'package:educational_institute/widgets/my_drawer.dart';
+import 'package:educational_institute/widgets/my_post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class StudentScreen extends StatelessWidget {
-  Padding _post(Size size) {
-    return Padding(
-      padding: EdgeInsets.all(size.height * size.width * 0.00006),
-      child: Container(
-        //if we use boxdecor we cannot use color property outside boxdecor
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(size.width * 0.05)),
-        ),
-        constraints: BoxConstraints(
-          minHeight: size.height * 0.3,
-          minWidth: size.width,
-        ),
-        child: Center(
-          child: Text('Post Comming Soon...'),
-        ),
-      ),
-    );
-  }
+class StudentScreen extends StatefulWidget {
+  @override
+  _StudentScreenState createState() => _StudentScreenState();
+}
 
+//list that stores all the posts from the institute
+List<PostModel> posts = [];
+//TODO: make post list updated with all the posts we have in the app
+//method to get post from firestore
+
+class _StudentScreenState extends State<StudentScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        endDrawer: Drawer(
-          child: ListView(children: <Widget>[
-            ListTile(
-              leading: Icon(Icons.arrow_back),
-              title: Text(''),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.search),
-              title: Text('University Search'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.language),
-              title: Text('Language Courses'),
-              onTap: () {
-                Navigator.pushNamed(context, '/transactionsList');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.merge_type),
-              title: Text('Seminars'),
-              onTap: () {
-                Navigator.pushNamed(context, '/transactionsList');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.group),
-              title: Text('About Us'),
-              onTap: () {
-                Navigator.pushNamed(context, '/transactionsList');
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text(''
-                  'Settings'),
-              onTap: () {
-                Navigator.pushNamed(context, '/transactionsList');
-              },
-            ),
-          ]),
-        ),
+        endDrawer: MyDrawer(),
         appBar: AppBar(
           title: Row(
             children: [
@@ -109,11 +62,62 @@ class StudentScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _post(size),
-                _post(size),
-                _post(size),
-                _post(size),
-                _post(size),
+                // StreamBuilder(
+                //   stream: FirebaseFirestore.instance
+                //       .collection('posts')
+                //       .snapshots(),
+                //   builder: (_, snapshot) {
+                //     if (!snapshot.hasData) {
+                //       return Center(
+                //         child: Text('Loading...'),
+                //       );
+                //     } else if (snapshot.hasError) {
+                //       return Center(
+                //         child: Text('Something Went Wrong!!'),
+                //       );
+                //     } else {
+                //       return ListView.builder(
+                //         itemCount: snapshot.data.documents.length,
+                //         itemBuilder: (_, index) {
+                //           return MyPost(
+                //             post: PostModel(
+                //               type: snapshot.data.documents[index].data['type'],
+                //               description: snapshot
+                //                   .data.documents[index].data['description'],
+                //               postTime: snapshot
+                //                   .data.documents[index].data['postTime'],
+                //               id: snapshot.data.documents[index].data['id'],
+                //               imageURL: snapshot
+                //                   .data.documents[index].data['imageURL'],
+                //               comment: snapshot
+                //                   .data.documents[index].data['comment'],
+                //               title:
+                //                   snapshot.data.documents[index].data['title'],
+                //               reacts:
+                //                   snapshot.data.documents[index].data['reacts'],
+                //             ),
+                //           );
+                //         },
+                //       );
+                //     }
+                //   },
+                // ),
+                // Provider<MyPost>(
+                //   create: (_) => MyPost(
+                //     posts: PostModel(
+                //       type: 'Language',
+                //       description:
+                //           'testing this app what you can do to help you get the 3rd of your time to be able to get a full time worker to get a job in the world of your home so you can get a free download of the letter from the library of the 3 and 2AM and you will 6AM said to be the only one in this pandemic who had a lot more than a few hundred',
+                //       postTime: '2020-10-10',
+                //       id: 'H4jGwnuNbJxOllVF81Hm',
+                //       imageURL:
+                //           'https://firebasestorage.googleapis.com/v0/b/educational-institute-ca530.appspot.com/o/posts%2Fimage_picker881231912493333317.jpg%7D?alt=media&token=c5ef44da-05ef-46b4-9d5c-06c47edb143a',
+                //       comment: 0,
+                //       title: 'testing',
+                //       reacts: 0,
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

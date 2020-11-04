@@ -51,14 +51,12 @@ class _InstituteLogInState extends State<InstituteLogIn> {
             icon,
             color: Colors.blue,
           ),
-          errorText: isUserNameValidate ? '* required' : null,
-
           hintText: txt,
           hintStyle: TextStyle(color: Colors.blue),
           //this is how we fill background color
           filled: true,
           fillColor: Colors.grey[100],
-
+          errorText: isUserNameValidate ? '* required' : null,
           //making boarder of textfield
         ),
       ),

@@ -2,13 +2,19 @@ import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:educational_institute/Screens/MainScreen.dart';
+import 'package:educational_institute/Screens/Subscreens/upload_post.dart';
 import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/navigating_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class InstituteScreen extends StatelessWidget {
+class InstituteScreen extends StatefulWidget {
+  @override
+  _InstituteScreenState createState() => _InstituteScreenState();
+}
+
+class _InstituteScreenState extends State<InstituteScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -76,7 +82,13 @@ class InstituteScreen extends StatelessWidget {
                               ),
                             ),
                             onPressed: () {
-                              AuthWrapper().fromInstituteScreenAddPost(context);
+                              Future<dynamic> result = Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                      builder: (_) => UploadPost()));
+                              if (result != null && result == true) {
+                                Scaffold.of(context).showSnackBar(
+                                    SnackBar(content: Text('Post Uploaded')));
+                              } else {}
                             },
                           ),
                         ),

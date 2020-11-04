@@ -50,10 +50,10 @@ class AuthWrapper extends StatelessWidget {
         new MaterialPageRoute(builder: (context) => new ChangeProfile()));
   }
 
-  void fromInstituteScreenAddPost(BuildContext context) {
+  /*bool fromInstituteScreenAddPost(BuildContext context) {
     Navigator.push(
         context, new MaterialPageRoute(builder: (context) => new UploadPost()));
-  }
+  }*/
 
   Future<Widget> fromInstituteLogInScreen(
       BuildContext context, String mail, String pass) async {
