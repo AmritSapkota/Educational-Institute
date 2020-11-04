@@ -14,7 +14,10 @@ class MyPost extends StatefulWidget {
 
 class _MyPostState extends State<MyPost> {
   getImage(String imageURL) {
-    return Image.network(imageURL);
+    if (imageURL != null)
+      return Image.network(imageURL);
+    else
+      return null;
   }
 
   @override

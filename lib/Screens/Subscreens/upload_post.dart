@@ -17,13 +17,6 @@ class UploadPost extends StatefulWidget {
   _UploadPostState createState() => _UploadPostState();
 }
 
-//snackbar showing upload post
-//bool showUploadedSnackbar = false;
-//this function shows snackbar if called in widgets inside scaffold
-// void showInSnackBar(String value) {
-//   scaffoldKey.currentState.showSnackBar(new SnackBar(content: new Text(value)));
-// }
-
 GlobalKey<FormState> _formKey = GlobalKey();
 bool autoValidate = false;
 // image file
@@ -53,14 +46,6 @@ class _UploadPostState extends State<UploadPost> {
         .child('posts/${Path.basename(_image.path)}}');
     StorageUploadTask uploadTask = storageReference.putFile(_image);
     StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-    /*
-    alternative process is:
-    String fileName = basename(_image.path);
-    StorageReference storageRef = FirebaseStorage.instance.ref().child(fileName);
-    StorageUploadTask uploadTAsk = firebaseStorageRef.putFile(_image);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-
-    */
 
     taskSnapshot.ref.getDownloadURL().then((fileURL) {
       setState(() {
@@ -87,10 +72,11 @@ class _UploadPostState extends State<UploadPost> {
         onPressed: () {
           if (_formKey.currentState.validate()) {
             _image != null ? uploadFile() : null;
+            print("#################" + _uploadedFileURL);
             PostModel post = PostModel(
               title: _title.text,
               description: _description.text,
-              id: uid,
+              id: '',
               imageURL: _uploadedFileURL,
               reacts: 0,
               comment: 0,
@@ -99,6 +85,8 @@ class _UploadPostState extends State<UploadPost> {
             );
             DatabaseService().upadatePost(post);
             clearSelection();
+          } else {
+            print('invalid form state');
           }
         },
         child: Text(
