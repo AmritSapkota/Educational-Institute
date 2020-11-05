@@ -1,9 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:educational_institute/Screens/Student/Drawer/about_us.dart';
-import 'package:educational_institute/Screens/Student/Drawer/language_course.dart';
-import 'package:educational_institute/Screens/Student/Drawer/serach%20university.dart';
-import 'package:educational_institute/Screens/Student/Drawer/settings.dart';
-import 'package:educational_institute/Screens/lib/colors.dart';
 import 'package:educational_institute/models/post_model.dart';
 import 'package:educational_institute/widgets/my_drawer.dart';
 import 'package:educational_institute/widgets/my_post.dart';
@@ -68,7 +63,6 @@ class _StudentScreenState extends State<StudentScreen> {
                       type: post['postType'],
                       description: post['description'],
                       postTime: post['postTime'],
-                      id: post['id'],
                       imageURL: post['imageURL'],
                       comment: post['comment'],
                       title: post['title'],

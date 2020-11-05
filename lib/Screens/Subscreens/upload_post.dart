@@ -1,11 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:educational_institute/Screens/lib/colors.dart';
-import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/current_date_time.dart';
 import 'package:educational_institute/Services/database_service.dart';
 import 'package:educational_institute/models/post_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -16,12 +12,12 @@ class UploadPost extends StatefulWidget {
   @override
   _UploadPostState createState() => _UploadPostState();
 }
-
+//to check form state
 GlobalKey<FormState> _formKey = GlobalKey();
 bool autoValidate = false;
 // image file
 File _image;
-String _uploadedFileURL;
+dynamic _uploadedFileURL = '';
 String _profileName = "Educational Institute";
 String dropdownValue = 'University';
 TextEditingController _description = TextEditingController();
@@ -33,6 +29,7 @@ class _UploadPostState extends State<UploadPost> {
   //pick image
   Future chooseFile() async {
     await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
+      //state is calledback cause we need to show image on the display
       setState(() {
         _image = File(image.path);
       });
@@ -41,23 +38,40 @@ class _UploadPostState extends State<UploadPost> {
 
   //to upload photo on fireStore
   Future uploadFile() async {
-    StorageReference storageReference = FirebaseStorage.instance
-        .ref()
-        .child('posts/${Path.basename(_image.path)}}');
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    //uploading image if selected
+    if (_image != null) {
+      StorageReference storageReference = FirebaseStorage.instance
+          .ref()
+          .child('posts/${Path.basename(_image.path)}}');
+      StorageUploadTask uploadTask = storageReference.putFile(_image);
+      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
 
-    taskSnapshot.ref.getDownloadURL().then((fileURL) {
+      var fileURL = await taskSnapshot.ref.getDownloadURL();
+
+      //no need to set state as we dont want to render it on screen
       setState(() {
         _uploadedFileURL = fileURL;
       });
-    });
+    }
+    //uploading post
+    PostModel post = PostModel(
+      title: _title.text,
+      description: _description.text,
+      imageURL: _uploadedFileURL,
+      reacts: 0,
+      comment: 0,
+      postTime: CurrentDateTime().getCurrentDateTime(),
+      type: dropdownValue,
+    );
+    print(_uploadedFileURL);
+    DatabaseService().upadatePost(post);
+    clearSelection();
   }
 
   clearSelection() {
     setState(() {
       _image = null;
-      _uploadedFileURL = null;
+      _uploadedFileURL = '';
       dropdownValue = 'University';
       _description.clear();
       _title.clear();
@@ -65,26 +79,13 @@ class _UploadPostState extends State<UploadPost> {
     });
   }
 
-  Builder UploadButton() {
+  Builder uploadButton() {
     return Builder(
-      builder: (ctx) => RaisedButton(
+      builder: (ctx,) => RaisedButton(
         color: PrimaryColor,
         onPressed: () {
           if (_formKey.currentState.validate()) {
-            _image != null ? uploadFile() : null;
-            print("#################" + _uploadedFileURL);
-            PostModel post = PostModel(
-              title: _title.text,
-              description: _description.text,
-              id: '',
-              imageURL: _uploadedFileURL,
-              reacts: 0,
-              comment: 0,
-              postTime: CurrentDateTime().getCurrentDateTime(),
-              type: dropdownValue,
-            );
-            DatabaseService().upadatePost(post);
-            clearSelection();
+            uploadFile();
           } else {
             print('invalid form state');
           }
@@ -233,7 +234,7 @@ class _UploadPostState extends State<UploadPost> {
                       ),
                     ),
                     Center(
-                      child: UploadButton(),
+                      child: uploadButton(),
                     ),
                   ],
                 ),

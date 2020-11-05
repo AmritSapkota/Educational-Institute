@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:educational_institute/Services/current_date_time.dart';
 import 'package:educational_institute/Services/readmore_text.dart';
 import 'package:educational_institute/models/post_model.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class MyPost extends StatefulWidget {
   PostModel post;
-  MyPost({@required this.post});
+  CollectionReference reference;
+  MyPost({@required this.post, @required this.reference});
   @override
   _MyPostState createState() => _MyPostState();
 }
@@ -59,7 +58,7 @@ class _MyPostState extends State<MyPost> {
             ReadMoreText(
               widget.post.description,
               trimLines: 2,
-              colorClickableText: Colors.pink,
+              colorClickableText: Colors.blueAccent,
               trimMode: TrimMode.Line,
               trimCollapsedText: '...Show more',
               trimExpandedText: ' show less',
@@ -67,11 +66,13 @@ class _MyPostState extends State<MyPost> {
             SizedBox(
               height: size.width * 0.03,
             ),
-            Container(
-              height: size.height * 0.3,
-              width: size.width,
-              child: getImage(widget.post.imageURL),
-            ),
+            widget.post.imageURL == ''
+                ? Container()
+                : Container(
+                    height: size.height * 0.3,
+                    width: size.width,
+                    child: getImage(widget.post.imageURL),
+                  ),
             SizedBox(
               height: size.width * 0.03,
             ),
@@ -82,7 +83,10 @@ class _MyPostState extends State<MyPost> {
                     SizedBox(
                       width: size.width * 0.1,
                     ),
-                    Icon(Icons.thumb_up),
+                    IconButton(
+                      icon: Icon(Icons.thumb_up),
+                      onPressed: () {},
+                    ),
                     Text(widget.post.reacts.toString()),
                   ],
                 ),

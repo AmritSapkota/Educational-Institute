@@ -40,7 +40,7 @@ class App extends StatelessWidget {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return UploadPost();
+          return MainScreen();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'comment_model.dart';
 
 class PostModel {
-  final String id, type, description, imageURL, title;
+  final String type, description, imageURL, title;
   final String postTime;
   final int reacts, comment;
   //final UserModel author;
@@ -12,7 +12,6 @@ class PostModel {
   const PostModel({
     @required this.comment,
     @required this.title,
-    @required this.id,
     @required this.type,
     @required this.description,
     // @required this.body,
