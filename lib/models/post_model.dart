@@ -5,11 +5,11 @@ import 'comment_model.dart';
 class PostModel {
   final String type, description, imageURL, title;
   final String postTime;
-  final int reacts, comment;
+  int reacts, comment;
   //final UserModel author;
   //final List<CommentModel> comments;
 
-  const PostModel({
+  PostModel({
     @required this.comment,
     @required this.title,
     @required this.type,

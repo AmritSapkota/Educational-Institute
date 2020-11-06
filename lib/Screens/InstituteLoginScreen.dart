@@ -1,4 +1,5 @@
 import 'package:educational_institute/Services/navigating_page.dart';
+import 'package:educational_institute/Services/show_dialogue.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,38 +27,43 @@ class _InstituteLogInState extends State<InstituteLogIn> {
     return true;
   }
 
+  GlobalKey<FormState> _formKey = GlobalKey();
+
   Padding loginTextField(
       IconData icon, String txt, double size, bool textObscure) {
     return Padding(
       padding: EdgeInsets.only(left: size, right: size),
-      child: TextFormField(
-        keyboardType: txt == 'Password' ? TextInputType.emailAddress : null,
-        controller: txt == 'Password' ? passController : idController,
-        //this is for password textfield
-        obscureText: textObscure,
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.transparent),
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-          ),
+      child: Form(
+        //key: _formKey,
+        child: TextFormField(
+          keyboardType: txt == 'Password' ? TextInputType.emailAddress : null,
+          controller: txt == 'Password' ? passController : idController,
+          //this is for password textfield
+          obscureText: textObscure,
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+            ),
 
-          //focus border to set border property when clicked
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.all(Radius.circular(30)),
+            //focus border to set border property when clicked
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.white),
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+            ),
+            border: InputBorder.none,
+            prefixIcon: Icon(
+              icon,
+              color: Colors.blue,
+            ),
+            hintText: txt,
+            hintStyle: TextStyle(color: Colors.blue),
+            //this is how we fill background color
+            filled: true,
+            fillColor: Colors.grey[100],
+            errorText: isUserNameValidate ? '* required' : null,
+            //making boarder of textfield
           ),
-          border: InputBorder.none,
-          prefixIcon: Icon(
-            icon,
-            color: Colors.blue,
-          ),
-          hintText: txt,
-          hintStyle: TextStyle(color: Colors.blue),
-          //this is how we fill background color
-          filled: true,
-          fillColor: Colors.grey[100],
-          errorText: isUserNameValidate ? '* required' : null,
-          //making boarder of textfield
         ),
       ),
     );
@@ -131,6 +137,7 @@ class _InstituteLogInState extends State<InstituteLogIn> {
                                 validateTextField(passController.text);
                                 AuthWrapper().fromInstituteLogInScreen(context,
                                     idController.text, passController.text);
+                                // DialogServices().showLoaderDialog(context, 'Loggine In..');
                               },
                               shape: RoundedRectangleBorder(
                                   //for rounded border

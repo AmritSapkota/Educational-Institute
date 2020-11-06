@@ -14,9 +14,22 @@ class MyPost extends StatefulWidget {
 class _MyPostState extends State<MyPost> {
   getImage(String imageURL) {
     if (imageURL != null)
-      return Image.network(imageURL);
+      return Image.network(
+        imageURL,
+        fit: BoxFit.cover,
+      );
     else
       return null;
+  }
+
+  bool _liked = false;
+  like() {
+    setState(() {
+      if (_liked == true)
+        widget.post.reacts++;
+      else
+        widget.post.reacts--;
+    });
   }
 
   @override
@@ -84,8 +97,15 @@ class _MyPostState extends State<MyPost> {
                       width: size.width * 0.1,
                     ),
                     IconButton(
-                      icon: Icon(Icons.thumb_up),
-                      onPressed: () {},
+                      icon: Icon(
+                        Icons.thumb_up,
+                        size: size.width * 0.05,
+                        color: !_liked ? Colors.grey : Colors.blue,
+                      ),
+                      onPressed: () {
+                        _liked = !_liked;
+                        like();
+                      },
                     ),
                     Text(widget.post.reacts.toString()),
                   ],
@@ -98,7 +118,9 @@ class _MyPostState extends State<MyPost> {
                     SizedBox(
                       width: size.width * 0.1,
                     ),
-                    Icon(Icons.comment),
+                    IconButton(
+                      icon: Icon(Icons.comment),
+                    ),
                     Text(widget.post.comment.toString()),
                   ],
                 ),

@@ -1,8 +1,10 @@
 import 'package:educational_institute/Screens/lib/colors.dart';
 import 'package:educational_institute/Services/current_date_time.dart';
 import 'package:educational_institute/Services/database_service.dart';
+import 'package:educational_institute/Services/show_dialogue.dart';
 import 'package:educational_institute/models/post_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +14,7 @@ class UploadPost extends StatefulWidget {
   @override
   _UploadPostState createState() => _UploadPostState();
 }
+
 //to check form state
 GlobalKey<FormState> _formKey = GlobalKey();
 bool autoValidate = false;
@@ -39,6 +42,7 @@ class _UploadPostState extends State<UploadPost> {
   //to upload photo on fireStore
   Future uploadFile() async {
     //uploading image if selected
+    DialogServices().showLoaderDialog(context, 'Uploading...');
     if (_image != null) {
       StorageReference storageReference = FirebaseStorage.instance
           .ref()
@@ -65,6 +69,7 @@ class _UploadPostState extends State<UploadPost> {
     );
     print(_uploadedFileURL);
     DatabaseService().upadatePost(post);
+    Navigator.pop(context);
     clearSelection();
   }
 
@@ -81,7 +86,10 @@ class _UploadPostState extends State<UploadPost> {
 
   Builder uploadButton() {
     return Builder(
-      builder: (ctx,) => RaisedButton(
+      builder: (
+        ctx,
+      ) =>
+          RaisedButton(
         color: PrimaryColor,
         onPressed: () {
           if (_formKey.currentState.validate()) {
