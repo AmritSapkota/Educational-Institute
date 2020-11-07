@@ -1,3 +1,4 @@
+import 'package:educational_institute/Screens/InstituteLoginScreen.dart';
 import 'package:educational_institute/Screens/StudentScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -29,7 +30,7 @@ class App extends StatelessWidget {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return StudentScreen();
+          return InstituteLogIn();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

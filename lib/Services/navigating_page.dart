@@ -59,9 +59,11 @@ class AuthWrapper extends StatelessWidget {
       BuildContext context, String mail, String pass) async {
     // ignore: unrelated_type_equality_checks
     if (await AuthServices(FirebaseAuth.instance).singIn(mail, pass) == true) {
+      Navigator.pop(context);
       Navigator.push(context,
           new MaterialPageRoute(builder: (context) => new InstituteScreen()));
-    } else
+    } else {
+      Navigator.pop(context);
       return await showDialog(
         context: context,
         builder: (context) => new AlertDialog(
@@ -78,6 +80,7 @@ class AuthWrapper extends StatelessWidget {
           ],
         ),
       );
+    }
   }
 
   @override
