@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 class AppliedFormModel {
+  //TODO: confirm whether receipt or payment needed or not
   String firstName,
       lastName,
       email,
@@ -10,10 +10,12 @@ class AppliedFormModel {
       imageURL,
       address,
       qualification,
-      courses;
+      courses,
+      universityName;
   DateTime dob;
 
   AppliedFormModel({
+    @required this.universityName,
     @required this.firstName,
     @required this.lastName,
     @required this.email,
@@ -37,6 +39,7 @@ class AppliedFormModel {
     qualification = appliedForm['qualification'];
     courses = appliedForm['courses'];
     dob = appliedForm['dob'];
+    universityName = appliedForm['universityName'];
   }
 
   Map<String, dynamic> toJason(AppliedFormModel form) {
@@ -51,6 +54,7 @@ class AppliedFormModel {
       'qualification': form.qualification,
       'courses': form.courses,
       'dob': form.dob,
+      'universityName': form.universityName,
     };
   }
 }

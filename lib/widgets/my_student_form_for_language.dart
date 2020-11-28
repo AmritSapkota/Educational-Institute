@@ -1,19 +1,21 @@
 import 'package:educational_institute/models/applied_university_form_model.dart';
+import 'package:educational_institute/models/booked_class_form_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class MyStudentFormForUniversity extends StatefulWidget {
-  AppliedFormModel student;
-  MyStudentFormForUniversity({@required this.student});
+// ignore: must_be_immutable
+class MyStudentFormForLanguage extends StatefulWidget {
+  BookedFormModel student;
+  MyStudentFormForLanguage({@required this.student});
   @override
-  _MyStudentFormForUniversityState createState() =>
-      _MyStudentFormForUniversityState();
+  _MyStudentFormForLanguageState createState() =>
+      _MyStudentFormForLanguageState();
 }
 
-class _MyStudentFormForUniversityState
-    extends State<MyStudentFormForUniversity> {
+class _MyStudentFormForLanguageState extends State<MyStudentFormForLanguage> {
   @override
   void initState() {
+    print("${widget.student.firstName}");
     super.initState();
   }
 
@@ -47,7 +49,7 @@ class _MyStudentFormForUniversityState
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'Scrollable Application form',
+                            'Scrollable Booking form',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.blue,
@@ -85,31 +87,26 @@ class _MyStudentFormForUniversityState
                             icon: Icons.people,
                           ),
                           FieldInApplicationForm(
-                              subTitle: 'DOB',
+                              subTitle: 'StartingAt',
                               title:
-                                  '${widget.student.dob.year}-${widget.student.dob.month}-${widget.student.dob.day}',
+                                  '${widget.student.estimatedStartingDate.year}-${widget.student.estimatedStartingDate.month}-${widget.student.estimatedStartingDate.day}',
                               icon: Icons.calendar_today),
                           FieldInApplicationForm(
-                            subTitle: 'Address',
-                            title: widget.student.address,
-                            icon: Icons.location_on,
+                            subTitle: 'Shift',
+                            title: widget.student.shift,
+                            icon: Icons.timelapse,
                           ),
                           FieldInApplicationForm(
-                            subTitle: 'Qualification',
-                            title: widget.student.qualification,
+                            subTitle: 'Class Type',
+                            title: widget.student.choosedClass,
                             icon: Icons.insert_drive_file,
                           ),
                           FieldInApplicationForm(
-                            subTitle: 'Courses',
-                            title: widget.student.courses,
+                            subTitle: 'Payment',
+                            title: widget.student.paymentOption,
                             icon: Icons.flag,
                           ),
-                          FieldInApplicationForm(
-                            subTitle: 'University',
-                            title: widget.student.universityName,
-                            icon: Icons.school,
-                          ),
-                          widget.student.imageURL == ''
+                          widget.student.receiptURL == ''
                               ? Container(
                                   child: Text(
                                     'No Receipt Available',
@@ -125,8 +122,8 @@ class _MyStudentFormForUniversityState
                                   height: size.height * 0.3,
                                   width: size.width,
                                   child: Image.network(
-                                    widget.student.imageURL,
-                                    fit: BoxFit.cover,
+                                    widget.student.receiptURL,
+                                    fit: BoxFit.scaleDown,
                                   ),
                                 ),
                         ],

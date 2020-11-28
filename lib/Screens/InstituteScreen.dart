@@ -3,12 +3,15 @@ import 'dart:ui';
 
 import 'package:educational_institute/Screens/MainScreen.dart';
 import 'package:educational_institute/Screens/Subscreens/add_post.dart';
+import 'package:educational_institute/Screens/Subscreens/schedule_seminar.dart';
 import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/navigating_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+
+import 'Subscreens/student_info.dart';
 
 class InstituteScreen extends StatefulWidget {
   @override
@@ -223,7 +226,10 @@ class _InstituteScreenState extends State<InstituteScreen> {
                                   fontSize: size.width * 0.05,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => ScheduleSeminar()));
+                              },
                             ),
                           ),
                           SizedBox(
@@ -266,7 +272,10 @@ class _InstituteScreenState extends State<InstituteScreen> {
                                   fontSize: size.width * 0.05,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => StudentInfo()));
+                              },
                             ),
                           ),
                         ],

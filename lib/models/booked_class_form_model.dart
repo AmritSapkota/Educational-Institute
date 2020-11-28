@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class LanguageStudentModel {
+class BookedFormModel {
   String firstName,
       lastName,
       email,
-      mobileNumber,
+      phoneNo,
       gender,
       choosedClass,
       shift,
@@ -12,7 +12,7 @@ class LanguageStudentModel {
       receiptURL;
   DateTime estimatedStartingDate;
 
-  LanguageStudentModel({
+  BookedFormModel({
     @required this.firstName,
     @required this.lastName,
     @required this.email,
@@ -20,12 +20,12 @@ class LanguageStudentModel {
     @required this.choosedClass,
     @required this.estimatedStartingDate,
     @required this.gender,
-    @required this.mobileNumber,
+    @required this.phoneNo,
     @required this.paymentOption,
     @required this.receiptURL,
   });
 
-  LanguageStudentModel.fromJason(Map<String, dynamic> languageStudent) {
+  BookedFormModel.fromJason(Map<String, dynamic> languageStudent) {
     firstName = languageStudent['firstName'];
     lastName = languageStudent['lastName'];
     email = languageStudent['email'];
@@ -33,12 +33,12 @@ class LanguageStudentModel {
     choosedClass = languageStudent['choosedClass'];
     estimatedStartingDate = languageStudent['estimatedStartingDate'];
     gender = languageStudent['gender'];
-    mobileNumber = languageStudent['mobileNumber'];
+    phoneNo = languageStudent['phoneNo'];
     paymentOption = languageStudent['paymentOption'];
     receiptURL = languageStudent['receiptURL'];
   }
 
-  Map<String, dynamic> toJason(LanguageStudentModel student) {
+  Map<String, dynamic> toJason(BookedFormModel student) {
     return {
       'firstName': student.firstName,
       'lastName': student.lastName,
@@ -47,7 +47,7 @@ class LanguageStudentModel {
       'choosedClass': student.choosedClass,
       'estimatedStartingDate': student.estimatedStartingDate,
       'gender': student.gender,
-      'mobileNumber': student.mobileNumber,
+      'phoneNo': student.phoneNo,
       'paymentOption': student.paymentOption,
       'receiptURL': student.receiptURL,
     };
