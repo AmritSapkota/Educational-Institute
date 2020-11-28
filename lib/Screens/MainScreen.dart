@@ -1,3 +1,4 @@
+import 'package:educational_institute/Screens/lib/colors.dart';
 import 'package:educational_institute/Services/navigating_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -34,30 +35,30 @@ class MainScreen extends StatelessWidget {
             SvgPicture.asset(
               'assets/images/EI-logo.svg',
               height: size.height / 5,
-              color: Colors.blue,
+              color: PrimaryColor,
             ),
             Text(
               'Educational Institute',
               style:
-                  TextStyle(fontSize: size.height * 0.04, color: Colors.blue),
+                  TextStyle(fontSize: size.height * 0.04, color: PrimaryColor),
             ),
             Flexible(
               fit: FlexFit.loose,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: PrimaryColor,
                 ),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      loginButton(size, 'Student Login', Colors.blue,
+                      loginButton(size, 'Student Login', PrimaryColor,
                           Colors.white, 'student', context),
                       SizedBox(
                         height: 15.0,
                       ),
                       loginButton(size, 'Institute Login', Colors.white,
-                          Colors.blue, 'institute', context)
+                          PrimaryColor, 'institute', context)
                     ],
                   ),
                 ),
