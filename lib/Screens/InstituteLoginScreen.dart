@@ -1,5 +1,8 @@
+import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/navigating_page.dart';
 import 'package:educational_institute/Services/show_dialogue.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -52,6 +55,10 @@ class _LoginTextFieldState extends State<LoginTextField> {
         //this is for password textfield
         obscureText: widget.textFieldIsPassword,
         decoration: InputDecoration(
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+          ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.transparent),
             borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -98,6 +105,7 @@ class InstituteLogIn extends StatefulWidget {
 
 class _InstituteLogInState extends State<InstituteLogIn> {
   bool isUserNameValidate = false;
+  String _email = 'mrtspkt@gmail.com';
 
   @override
   void initState() {
@@ -214,10 +222,26 @@ class _InstituteLogInState extends State<InstituteLogIn> {
                           SizedBox(
                             height: size.height * 0.01,
                           ),
-                          Text(
-                            'forget password?',
-                            style: TextStyle(
-                              color: Colors.white,
+                          InkWell(
+                            onTap: () async {
+                              await AuthServices(FirebaseAuth.instance)
+                                  .resetPassword(_email, context)
+                                  .then((value) => showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text('Success'),
+                                            content: Text(
+                                                'Reset email has been sent to your email'),
+                                          );
+                                        },
+                                      ));
+                            },
+                            child: Text(
+                              'forget password?',
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ],

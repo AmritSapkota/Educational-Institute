@@ -2,11 +2,12 @@ import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:educational_institute/Screens/MainScreen.dart';
-import 'package:educational_institute/Screens/Subscreens/upload_post.dart';
+import 'package:educational_institute/Screens/Subscreens/add_post.dart';
 import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/navigating_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class InstituteScreen extends StatefulWidget {
@@ -15,8 +16,26 @@ class InstituteScreen extends StatefulWidget {
 }
 
 class _InstituteScreenState extends State<InstituteScreen> {
+  BoxDecoration _menuDecoration() {
+    return BoxDecoration(
+        gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [Colors.transparent, Colors.white]));
+  }
+
+  BoxConstraints _menuConstraints(Size size) {
+    return BoxConstraints(
+      minWidth: size.width,
+      maxWidth: size.width,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     final Size size = MediaQuery.of(context).size;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -36,7 +55,7 @@ class _InstituteScreenState extends State<InstituteScreen> {
                   color: Colors.blue.withOpacity(0.4),
                 ),
                 Positioned(
-                  top: size.height * 0.29,
+                  top: size.height * 0.2,
                   left: size.width * 0.09,
                   child: Text(
                     'What you want to do today?',
@@ -48,7 +67,7 @@ class _InstituteScreenState extends State<InstituteScreen> {
                   ),
                 ),
                 Positioned(
-                  top: size.height * 0.4,
+                  top: size.height * 0.3,
                   child: Container(
                     constraints: BoxConstraints(
                       minHeight: size.height * 0.3,
@@ -56,124 +75,202 @@ class _InstituteScreenState extends State<InstituteScreen> {
                       maxWidth: size.width,
                       maxHeight: double.infinity,
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                  colors: [Colors.transparent, Colors.white])),
-                          constraints: BoxConstraints(
-                            minWidth: size.width,
-                            maxWidth: size.width,
-                          ),
-                          padding: EdgeInsets.only(left: size.width * 0.1),
-                          alignment: Alignment.centerLeft,
-                          child: FlatButton(
-                            child: Text(
-                              'Add posts',
-                              style: TextStyle(
-                                color: Colors.blue[700],
-                                fontWeight: FontWeight.bold,
-                                fontSize: size.width * 0.05,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: _menuDecoration(),
+                            constraints: _menuConstraints(size),
+                            padding: EdgeInsets.only(left: size.width * 0.1),
+                            alignment: Alignment.centerLeft,
+                            child: FlatButton(
+                              child: Text(
+                                'Add Employee',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: size.width * 0.05,
+                                ),
                               ),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => UploadPost()));
+                              },
                             ),
-                            onPressed: () {
-                              Future<dynamic> result = Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                      builder: (_) => UploadPost()));
-                              if (result != null && result == true) {
-                                Scaffold.of(context).showSnackBar(
-                                    SnackBar(content: Text('Post Uploaded')));
-                              } else {}
-                            },
                           ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                  colors: [Colors.transparent, Colors.white])),
-                          constraints: BoxConstraints(
-                            minWidth: size.width,
-                            maxWidth: size.width,
+                          SizedBox(
+                            height: size.height * 0.005,
                           ),
-                          padding: EdgeInsets.only(left: size.width * 0.1),
-                          alignment: Alignment.centerLeft,
-                          child: FlatButton(
-                            child: Text(
-                              'Manage Posts',
-                              style: TextStyle(
-                                color: Colors.blue[700],
-                                fontWeight: FontWeight.bold,
-                                fontSize: size.width * 0.05,
+                          Container(
+                            decoration: _menuDecoration(),
+                            constraints: _menuConstraints(size),
+                            padding: EdgeInsets.only(left: size.width * 0.1),
+                            alignment: Alignment.centerLeft,
+                            child: FlatButton(
+                              child: Text(
+                                'Add Language Class',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: size.width * 0.05,
+                                ),
                               ),
+                              onPressed: () {},
                             ),
-                            onPressed: () {
-                              AuthWrapper()
-                                  .fromInstitutescreenManagePost(context);
-                            },
                           ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                  colors: [Colors.transparent, Colors.white])),
-                          constraints: BoxConstraints(
-                            minWidth: size.width,
-                            maxWidth: size.width,
+                          SizedBox(
+                            height: size.height * 0.005,
                           ),
-                          padding: EdgeInsets.only(left: size.width * 0.1),
-                          alignment: Alignment.centerLeft,
-                          child: FlatButton(
-                            child: Text(
-                              'Profile Settings',
-                              style: TextStyle(
-                                color: Colors.blue[700],
-                                fontWeight: FontWeight.bold,
-                                fontSize: size.width * 0.05,
+                          Container(
+                            decoration: _menuDecoration(),
+                            constraints: _menuConstraints(size),
+                            padding: EdgeInsets.only(left: size.width * 0.1),
+                            alignment: Alignment.centerLeft,
+                            child: FlatButton(
+                              child: Text(
+                                'Add posts',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: size.width * 0.05,
+                                ),
                               ),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => UploadPost()));
+                              },
                             ),
-                            onPressed: () {
-                              AuthWrapper()
-                                  .fromInstituteScreenProfileSettings(context);
-                            },
                           ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                  colors: [Colors.transparent, Colors.white])),
-                          constraints: BoxConstraints(
-                            minWidth: size.width,
-                            maxWidth: size.width,
+                          SizedBox(
+                            height: size.height * 0.005,
                           ),
-                          padding: EdgeInsets.only(left: size.width * 0.1),
-                          alignment: Alignment.centerLeft,
-                          child: FlatButton(
-                            child: Text(
-                              'Sign Out',
-                              style: TextStyle(
-                                color: Colors.blue[700],
-                                fontWeight: FontWeight.bold,
-                                fontSize: size.width * 0.05,
+                          Container(
+                            decoration: _menuDecoration(),
+                            constraints: _menuConstraints(size),
+                            padding: EdgeInsets.only(left: size.width * 0.1),
+                            alignment: Alignment.centerLeft,
+                            child: FlatButton(
+                              child: Text(
+                                'Manage Employee',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: size.width * 0.05,
+                                ),
                               ),
+                              onPressed: () {},
                             ),
-                            onPressed: () {
-                              AuthServices(FirebaseAuth.instance).signOut();
-                              Navigator.pop(context, null);
-                            },
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            height: size.height * 0.005,
+                          ),
+                          Container(
+                            decoration: _menuDecoration(),
+                            constraints: _menuConstraints(size),
+                            padding: EdgeInsets.only(left: size.width * 0.1),
+                            alignment: Alignment.centerLeft,
+                            child: FlatButton(
+                              child: Text(
+                                'Manage Posts',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: size.width * 0.05,
+                                ),
+                              ),
+                              onPressed: () {
+                                AuthWrapper()
+                                    .fromInstitutescreenManagePost(context);
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: size.height * 0.005,
+                          ),
+                          Container(
+                            decoration: _menuDecoration(),
+                            constraints: _menuConstraints(size),
+                            padding: EdgeInsets.only(left: size.width * 0.1),
+                            alignment: Alignment.centerLeft,
+                            child: FlatButton(
+                              child: Text(
+                                'My Profile',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: size.width * 0.05,
+                                ),
+                              ),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: size.height * 0.005,
+                          ),
+                          Container(
+                            decoration: _menuDecoration(),
+                            constraints: _menuConstraints(size),
+                            padding: EdgeInsets.only(left: size.width * 0.1),
+                            alignment: Alignment.centerLeft,
+                            child: FlatButton(
+                              child: Text(
+                                'Schedule Seminar',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: size.width * 0.05,
+                                ),
+                              ),
+                              onPressed: () {},
+                            ),
+                          ),
+                          SizedBox(
+                            height: size.height * 0.005,
+                          ),
+                          Container(
+                            decoration: _menuDecoration(),
+                            constraints: _menuConstraints(size),
+                            padding: EdgeInsets.only(left: size.width * 0.1),
+                            alignment: Alignment.centerLeft,
+                            child: FlatButton(
+                              child: Text(
+                                'Sign Out',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: size.width * 0.05,
+                                ),
+                              ),
+                              onPressed: () {
+                                AuthServices(FirebaseAuth.instance).signOut();
+                                Navigator.pop(context, null);
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: size.height * 0.005,
+                          ),
+                          Container(
+                            decoration: _menuDecoration(),
+                            constraints: _menuConstraints(size),
+                            padding: EdgeInsets.only(left: size.width * 0.1),
+                            alignment: Alignment.centerLeft,
+                            child: FlatButton(
+                              child: Text(
+                                'Students Information',
+                                style: TextStyle(
+                                  color: Colors.blue[700],
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: size.width * 0.05,
+                                ),
+                              ),
+                              onPressed: () {},
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -185,10 +282,3 @@ class _InstituteScreenState extends State<InstituteScreen> {
     );
   }
 }
-/*Container(
-                  child: Column(
-                    children: [
-
-                    ],
-                  ),
-                ),*/

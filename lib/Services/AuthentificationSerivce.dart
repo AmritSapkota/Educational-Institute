@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 String uid;
 
@@ -25,6 +26,27 @@ class AuthServices {
       print(e.message);
       return false;
     }
+  }
+
+  Future<void> resetPassword(String email, context) async {
+    AlertDialog alert = AlertDialog(
+      content: Row(
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.01,
+          ),
+          Text('Please wait a moment...'),
+        ],
+      ),
+    );
+    showDialog(
+        context: context,
+        builder: (context) {
+          return alert;
+        });
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+    Navigator.pop(context);
   }
 
   Future<bool> singUp({String email, String password}) async {

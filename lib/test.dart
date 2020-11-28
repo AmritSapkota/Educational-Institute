@@ -28,11 +28,11 @@ class _TestState extends State<Test> {
 
   //method to upload file to firestore
   Future uploadFile() async {
-    StorageReference storageReference = FirebaseStorage.instance
+    Reference storageReference = FirebaseStorage.instance
         .ref()
         .child('chats/${Path.basename(_image.path)}}');
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
-    StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+    UploadTask uploadTask = storageReference.putFile(_image);
+    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
     taskSnapshot.ref.getDownloadURL().then(
           (value) => print("Done: $value"),
         );

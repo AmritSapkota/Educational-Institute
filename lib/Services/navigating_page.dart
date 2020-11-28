@@ -3,11 +3,12 @@ import 'package:educational_institute/Screens/InstituteScreen.dart';
 import 'package:educational_institute/Screens/MainScreen.dart';
 import 'package:educational_institute/Screens/StudentScreen.dart';
 import 'package:educational_institute/Screens/Subscreens/manage_post.dart';
-import 'package:educational_institute/Screens/Subscreens/profile_settings.dart';
-import 'package:educational_institute/Screens/Subscreens/upload_post.dart';
+import 'package:educational_institute/Screens/Subscreens/my_profile.dart';
+import 'package:educational_institute/Screens/Subscreens/add_post.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'AuthentificationSerivce.dart';
 
 class AuthProvider extends StatelessWidget {
@@ -30,11 +31,17 @@ class AuthProvider extends StatelessWidget {
 }
 
 class AuthWrapper extends StatelessWidget {
-  void fromMainScreen(String buttonType, BuildContext context) {
+  void fromMainScreen(String buttonType, BuildContext context) async {
     if (buttonType == 'institute') {
+      //TODO: get student uid and then store it for the rest of the app till uninstall
+      //so that post will store uid in like section to show that this user has like the post
+      // and on the other hand this uid will help to log in user in student page or institute page
+      // when he/she opens app for second time
       Navigator.push(context,
           new MaterialPageRoute(builder: (context) => new InstituteLogIn()));
     } else {
+      //TODO: get student uid and then store it for the rest of the app till uninstall
+      //TODO: use shared prefs to store value and then
       Navigator.push(context,
           new MaterialPageRoute(builder: (context) => new StudentScreen()));
     }

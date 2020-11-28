@@ -39,20 +39,18 @@ class _UploadPostState extends State<UploadPost> {
     });
   }
 
+  onUpload() async {
+    await uploadFile();
+  }
+
   //to upload photo on fireStore
   Future uploadFile() async {
     //uploading image if selected
     DialogServices().showLoaderDialog(context, 'Uploading...');
     if (_image != null) {
-      StorageReference storageReference = FirebaseStorage.instance
-          .ref()
-          .child('posts/${Path.basename(_image.path)}}');
-      StorageUploadTask uploadTask = storageReference.putFile(_image);
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-
-      var fileURL = await taskSnapshot.ref.getDownloadURL();
-
-      //no need to set state as we dont want to render it on screen
+      String fileURL = await DatabaseService().imageToStorage(_image);
+      print(fileURL +
+          "------------------------------------------------------------");
       setState(() {
         _uploadedFileURL = fileURL;
       });
@@ -63,12 +61,12 @@ class _UploadPostState extends State<UploadPost> {
       description: _description.text,
       imageURL: _uploadedFileURL,
       reacts: 0,
-      comment: 0,
+      commentId: 0,
       postTime: CurrentDateTime().getCurrentDateTime(),
-      type: dropdownValue,
+      postType: dropdownValue,
     );
-    print(_uploadedFileURL);
-    DatabaseService().upadatePost(post);
+    print(post);
+    DatabaseService().postToDatabase(post);
     Navigator.pop(context);
     clearSelection();
   }
@@ -93,7 +91,7 @@ class _UploadPostState extends State<UploadPost> {
         color: PrimaryColor,
         onPressed: () {
           if (_formKey.currentState.validate()) {
-            uploadFile();
+            onUpload();
           } else {
             print('invalid form state');
           }

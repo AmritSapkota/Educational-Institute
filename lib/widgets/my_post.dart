@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:educational_institute/Screens/Student/Student/apply_now_university.dart';
 import 'package:educational_institute/Services/readmore_text.dart';
+import 'package:educational_institute/Services/show_dialogue.dart';
 import 'package:educational_institute/models/post_model.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,8 @@ class MyPost extends StatefulWidget {
 }
 
 class _MyPostState extends State<MyPost> {
+  bool liked = false;
+  int _likeCount;
   getImage(String imageURL) {
     if (imageURL != null)
       return Image.network(
@@ -22,16 +26,18 @@ class _MyPostState extends State<MyPost> {
       return null;
   }
 
-  bool _liked = false;
   like() {
     setState(() {
-      if (_liked == true)
+      if (liked == true)
         widget.post.reacts++;
       else
         widget.post.reacts--;
     });
   }
 
+  comment() {
+    //TODO:
+  }
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -70,7 +76,7 @@ class _MyPostState extends State<MyPost> {
             ),
             ReadMoreText(
               widget.post.description,
-              trimLines: 2,
+              trimLines: 3,
               colorClickableText: Colors.blueAccent,
               trimMode: TrimMode.Line,
               trimCollapsedText: '...Show more',
@@ -80,15 +86,18 @@ class _MyPostState extends State<MyPost> {
               height: size.width * 0.03,
             ),
             widget.post.imageURL == ''
-                ? Container()
+                ? Container(
+                    height: 0,
+                    width: 0,
+                  )
                 : Container(
+                    padding: EdgeInsets.only(
+                      bottom: size.width * 0.03,
+                    ),
                     height: size.height * 0.3,
                     width: size.width,
                     child: getImage(widget.post.imageURL),
                   ),
-            SizedBox(
-              height: size.width * 0.03,
-            ),
             Row(
               children: [
                 Column(
@@ -100,10 +109,10 @@ class _MyPostState extends State<MyPost> {
                       icon: Icon(
                         Icons.thumb_up,
                         size: size.width * 0.05,
-                        color: !_liked ? Colors.grey : Colors.blue,
+                        color: !liked ? Colors.grey : Colors.blue,
                       ),
                       onPressed: () {
-                        _liked = !_liked;
+                        liked = !liked;
                         like();
                       },
                     ),
@@ -119,9 +128,12 @@ class _MyPostState extends State<MyPost> {
                       width: size.width * 0.1,
                     ),
                     IconButton(
+                      onPressed: () {
+                        DialogServices().showCommentDialogue(context, size);
+                      },
                       icon: Icon(Icons.comment),
                     ),
-                    Text(widget.post.comment.toString()),
+                    Text(widget.post.commentId.toString()),
                   ],
                 ),
                 Spacer(),
@@ -138,7 +150,11 @@ class _MyPostState extends State<MyPost> {
                       ),
                     ],
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => ApplyNowForUniversity());
+                  },
                 ),
               ],
             ),
@@ -146,6 +162,5 @@ class _MyPostState extends State<MyPost> {
         ),
       ),
     );
-    ;
   }
 }

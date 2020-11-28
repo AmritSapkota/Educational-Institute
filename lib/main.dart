@@ -1,7 +1,9 @@
-import 'package:educational_institute/Screens/InstituteLoginScreen.dart';
-import 'package:educational_institute/Screens/StudentScreen.dart';
+import 'package:educational_institute/widgets/my_student_form_for_university.dart';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'Screens/MainScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,9 +30,9 @@ class App extends StatelessWidget {
           );
         }
 
-        // Once complete, show your application
+        // if firebase installed and has network connection then we proceed, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return InstituteLogIn();
+          return MainScreen();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
