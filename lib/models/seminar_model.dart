@@ -14,13 +14,13 @@ class SeminarModel {
   @required this.date,
 });
 
-  Map<String, dynamic> toJason(SeminarModel seminar) {
+  Map<String, dynamic> toJason() {
     return {
-      'description': seminar.description,
-      'link': seminar.link,
-      'location': seminar.location,
-      'eId': seminar.eId,
-      'date': seminar.date,
+      'description': description,
+      'link': link,
+      'location': location,
+      'eId': eId,
+      'date': date,
     };
   }
 

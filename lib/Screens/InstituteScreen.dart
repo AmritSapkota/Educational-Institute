@@ -2,7 +2,9 @@ import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:educational_institute/Screens/MainScreen.dart';
+import 'package:educational_institute/Screens/Subscreens/add_employee.dart';
 import 'package:educational_institute/Screens/Subscreens/add_post.dart';
+import 'package:educational_institute/Screens/Subscreens/my_profile.dart';
 import 'package:educational_institute/Screens/Subscreens/schedule_seminar.dart';
 import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/navigating_page.dart';
@@ -99,28 +101,8 @@ class _InstituteScreenState extends State<InstituteScreen> {
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => UploadPost()));
+                                    builder: (_) => AddEmployee()));
                               },
-                            ),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.005,
-                          ),
-                          Container(
-                            decoration: _menuDecoration(),
-                            constraints: _menuConstraints(size),
-                            padding: EdgeInsets.only(left: size.width * 0.1),
-                            alignment: Alignment.centerLeft,
-                            child: FlatButton(
-                              child: Text(
-                                'Add Language Class',
-                                style: TextStyle(
-                                  color: Colors.blue[700],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: size.width * 0.05,
-                                ),
-                              ),
-                              onPressed: () {},
                             ),
                           ),
                           SizedBox(
@@ -142,7 +124,7 @@ class _InstituteScreenState extends State<InstituteScreen> {
                               ),
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => UploadPost()));
+                                    builder: (_) => AddPost()));
                               },
                             ),
                           ),
@@ -183,10 +165,7 @@ class _InstituteScreenState extends State<InstituteScreen> {
                                   fontSize: size.width * 0.05,
                                 ),
                               ),
-                              onPressed: () {
-                                AuthWrapper()
-                                    .fromInstitutescreenManagePost(context);
-                              },
+                              onPressed: () {},
                             ),
                           ),
                           SizedBox(
@@ -206,7 +185,10 @@ class _InstituteScreenState extends State<InstituteScreen> {
                                   fontSize: size.width * 0.05,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) => MyProfile()));
+                              },
                             ),
                           ),
                           SizedBox(

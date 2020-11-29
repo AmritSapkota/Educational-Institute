@@ -52,10 +52,10 @@ class AuthWrapper extends StatelessWidget {
         context, new MaterialPageRoute(builder: (context) => new ManagePost()));
   }
 
-  void fromInstituteScreenProfileSettings(BuildContext context) {
-    Navigator.push(context,
-        new MaterialPageRoute(builder: (context) => new ChangeProfile()));
-  }
+  // void fromInstituteScreenProfileSettings(BuildContext context) {
+  //   Navigator.push(context,
+  //       new MaterialPageRoute(builder: (context) => new ChangeProfile()));
+  // }
 
   /*bool fromInstituteScreenAddPost(BuildContext context) {
     Navigator.push(
