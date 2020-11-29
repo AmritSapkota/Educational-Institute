@@ -42,19 +42,19 @@ class AppliedFormModel {
     universityName = appliedForm['universityName'];
   }
 
-  Map<String, dynamic> toJason(AppliedFormModel form) {
+  Map<String, dynamic> toJason() {
     return {
-      'firstName': form.firstName,
-      'lastName': form.lastName,
-      'email': form.email,
-      'phoneNo': form.phoneNo,
-      'gender': form.gender,
-      'imageURL': form.imageURL,
-      'address': form.address,
-      'qualification': form.qualification,
-      'courses': form.courses,
-      'dob': form.dob,
-      'universityName': form.universityName,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'phoneNo': phoneNo,
+      'gender': gender,
+      'imageURL': imageURL,
+      'address': address,
+      'qualification': qualification,
+      'courses': courses,
+      'dob': dob,
+      'universityName': universityName,
     };
   }
 }

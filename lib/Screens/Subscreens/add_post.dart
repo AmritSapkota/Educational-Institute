@@ -10,9 +10,9 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 
-class UploadPost extends StatefulWidget {
+class AddPost extends StatefulWidget {
   @override
-  _UploadPostState createState() => _UploadPostState();
+  _AddPostState createState() => _AddPostState();
 }
 
 //to check form state
@@ -28,7 +28,7 @@ TextEditingController _title = TextEditingController();
 //for displaying snackbar
 final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class _UploadPostState extends State<UploadPost> {
+class _AddPostState extends State<AddPost> {
   //pick image
   Future chooseFile() async {
     await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
@@ -49,8 +49,6 @@ class _UploadPostState extends State<UploadPost> {
     DialogServices().showLoaderDialog(context, 'Uploading...');
     if (_image != null) {
       String fileURL = await DatabaseService().imageToStorage(_image);
-      print(fileURL +
-          "------------------------------------------------------------");
       setState(() {
         _uploadedFileURL = fileURL;
       });
@@ -116,22 +114,14 @@ class _UploadPostState extends State<UploadPost> {
       child: MaterialApp(
         home: SafeArea(
           child: Scaffold(
+            appBar: AppBar(
+              title: Text('Add Post'),
+            ),
             body: SingleChildScrollView(
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.account_circle,
-                          size: size.height * 0.1,
-                        ),
-                        Text(
-                          _profileName,
-                        )
-                      ],
-                    ),
                     Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: size.width * 0.1),

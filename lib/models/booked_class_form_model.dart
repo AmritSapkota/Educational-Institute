@@ -38,18 +38,18 @@ class BookedFormModel {
     receiptURL = languageStudent['receiptURL'];
   }
 
-  Map<String, dynamic> toJason(BookedFormModel student) {
+  Map<String, dynamic> toJason() {
     return {
-      'firstName': student.firstName,
-      'lastName': student.lastName,
-      'email': student.email,
-      'shift': student.shift,
-      'choosedClass': student.choosedClass,
-      'estimatedStartingDate': student.estimatedStartingDate,
-      'gender': student.gender,
-      'phoneNo': student.phoneNo,
-      'paymentOption': student.paymentOption,
-      'receiptURL': student.receiptURL,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'shift': shift,
+      'choosedClass': choosedClass,
+      'estimatedStartingDate': estimatedStartingDate,
+      'gender': gender,
+      'phoneNo': phoneNo,
+      'paymentOption': paymentOption,
+      'receiptURL': receiptURL,
     };
   }
 }
