@@ -146,7 +146,7 @@ class _StudentScreenState extends State<StudentScreen> {
                 builder: (_, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
-                      child: Text('Loading...'),
+                      child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasError) {
                     return Center(
@@ -168,7 +168,9 @@ class _StudentScreenState extends State<StudentScreen> {
                             postTime: post['postTime'],
                             imageURL: post['imageURL'],
                             commentId: post['commentId'],
-                            title: post['title'],
+                            country: post['country'],
+                            university: post['university'],
+                            eId: post['eId'],
                             reacts: post['reacts'],
                           ),
                         );

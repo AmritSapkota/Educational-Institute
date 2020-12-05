@@ -2,7 +2,6 @@ import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/navigating_page.dart';
 import 'package:educational_institute/Services/show_dialogue.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -94,7 +93,6 @@ class _LoginTextFieldState extends State<LoginTextField> {
         },
       ),
     );
-    ;
   }
 }
 

@@ -10,25 +10,21 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as Path;
 
+//TODO: validator
 class AddPost extends StatefulWidget {
   @override
   _AddPostState createState() => _AddPostState();
 }
 
-//to check form state
-GlobalKey<FormState> _formKey = GlobalKey();
-bool autoValidate = false;
-// image file
-File _image;
-dynamic _uploadedFileURL = '';
-String _profileName = "Educational Institute";
-String dropdownValue = 'University';
-TextEditingController _description = TextEditingController();
-TextEditingController _title = TextEditingController();
-//for displaying snackbar
-final _scaffoldKey = GlobalKey<ScaffoldState>();
-
 class _AddPostState extends State<AddPost> {
+  GlobalKey<FormState> _formKey = GlobalKey();
+  File _image;
+  var _uploadedFileURL = '';
+  String dropdownValue = 'University';
+  TextEditingController _description = TextEditingController();
+  TextEditingController _university = TextEditingController();
+  TextEditingController _country = TextEditingController();
+
   //pick image
   Future chooseFile() async {
     await ImagePicker().getImage(source: ImageSource.gallery).then((image) {
@@ -55,7 +51,10 @@ class _AddPostState extends State<AddPost> {
     }
     //uploading post
     PostModel post = PostModel(
-      title: _title.text,
+      postId: '',
+      eId: '',
+      country: _country.text,
+      university: _university.text,
       description: _description.text,
       imageURL: _uploadedFileURL,
       reacts: 0,
@@ -64,7 +63,13 @@ class _AddPostState extends State<AddPost> {
       postType: dropdownValue,
     );
     print(post);
-    DatabaseService().postToDatabase(post);
+    DatabaseService().postToDatabase(post).then((value) => showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Center(child: Text('Successfully Uploaded Post')),
+          );
+        }));
     Navigator.pop(context);
     clearSelection();
   }
@@ -73,35 +78,10 @@ class _AddPostState extends State<AddPost> {
     setState(() {
       _image = null;
       _uploadedFileURL = '';
-      dropdownValue = 'University';
       _description.clear();
-      _title.clear();
-      autoValidate = false;
+      _country.clear();
+      _university.clear();
     });
-  }
-
-  Builder uploadButton() {
-    return Builder(
-      builder: (
-        ctx,
-      ) =>
-          RaisedButton(
-        color: PrimaryColor,
-        onPressed: () {
-          if (_formKey.currentState.validate()) {
-            onUpload();
-          } else {
-            print('invalid form state');
-          }
-        },
-        child: Text(
-          'Upload',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -120,47 +100,40 @@ class _AddPostState extends State<AddPost> {
             body: SingleChildScrollView(
               child: Form(
                 key: _formKey,
-                child: Column(
-                  children: [
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: size.width * 0.1),
-                      width: size.width,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          //Spacer(),
-                          Text(
-                            'Select Post Type  ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue,
-                            ),
-                          ),
-
-                          DropdownButton(
-                            value: dropdownValue,
-                            items: <String>['University', 'Seminar', 'Language']
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                dropdownValue = newValue;
-                              });
-                            },
-                            onTap: () {},
-                          ),
-                        ],
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
+                  height: size.height,
+                  width: size.width,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _country,
+                        decoration: InputDecoration(
+                          labelText: 'Country',
+                          hintText: 'Enter Country Name',
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                        ),
                       ),
-                    ),
-                    Divider(),
-                    Container(
+                      TextFormField(
+                        controller: _university,
+                        decoration: InputDecoration(
+                          labelText: 'University',
+                          hintText: 'Enter University Name',
+                          floatingLabelBehavior: FloatingLabelBehavior.always,
+                        ),
+                      ),
+                      _image != null
+                          ? Container(
+                              padding: EdgeInsets.only(top: size.height * 0.02),
+                              child: Image.file(
+                                _image,
+                                height: size.height * 0.3,
+                              ),
+                            )
+                          : Container(),
+                      Container(
                         padding:
-                            EdgeInsets.symmetric(horizontal: size.width * 0.1),
+                            EdgeInsets.symmetric(vertical: size.height * 0.02),
                         child: TextFormField(
                           validator: (value) {
                             if (value.isEmpty) {
@@ -168,71 +141,94 @@ class _AddPostState extends State<AddPost> {
                             }
                             return null;
                           },
-                          controller: _title,
+                          controller: _description,
+                          //keyboardType: TextInputType.multiline,
+                          textInputAction: TextInputAction.newline,
+                          maxLines: 10,
+                          autofocus: false,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
                                 color: Colors.grey,
                               ),
                             ),
-                            labelText: 'title',
-                          ),
-                        )),
-                    _image != null
-                        ? Image.file(
-                            _image,
-                            height: size.height * 0.3,
-                          )
-                        : Container(),
-                    SizedBox(
-                      height: size.height * 0.1,
-                    ),
-                    Text('Description'),
-                    Container(
-                      padding: EdgeInsets.only(
-                          left: size.width * 0.05, right: size.width * 0.05),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                        controller: _description,
-                        //keyboardType: TextInputType.multiline,
-                        textInputAction: TextInputAction.newline,
-                        maxLines: 10,
-                        autofocus: false,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                            ),
-                          ),
-                          hintText: "Whats in your mind...",
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey,
+                            hintText: "Whats in your mind...",
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Center(
-                      child: RaisedButton(
-                        onPressed: () {
-                          chooseFile();
-                        },
-                        textTheme: ButtonTextTheme.accent,
-                        child: Icon(
-                          Icons.photo_album,
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: RaisedButton(
+                              onPressed: () {
+                                chooseFile();
+                              },
+                              textTheme: ButtonTextTheme.accent,
+                              child: Icon(
+                                Icons.photo_album,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Center(
-                      child: uploadButton(),
-                    ),
-                  ],
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: RaisedButton(
+                              color: Colors.blue,
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  showDialog(
+                                      useRootNavigator: false,
+                                      context: context,
+                                      builder: (context) {
+                                        Widget cancelButton = FlatButton(
+                                          child: Text("Cancel"),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        );
+                                        Widget continueButton = FlatButton(
+                                          child: Text("Continue"),
+                                          onPressed: () async {
+                                            Navigator.pop(context);
+                                            await onUpload();
+                                          },
+                                        );
+                                        // set up the AlertDialog
+                                        AlertDialog alert = AlertDialog(
+                                          title: Text("Confirm Post"),
+                                          content: Text(
+                                              "Would you like to save changes to profile?"),
+                                          actions: [
+                                            cancelButton,
+                                            continueButton,
+                                          ],
+                                        );
+                                        return alert;
+                                      });
+                                }
+                              },
+                              textTheme: ButtonTextTheme.accent,
+                              child: Text(
+                                'Upload',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

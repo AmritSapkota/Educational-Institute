@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:educational_institute/models/applied_university_form_model.dart';
 import 'package:educational_institute/models/booked_class_form_model.dart';
 import 'package:educational_institute/widgets/student_in_card_view.dart';
@@ -64,79 +65,99 @@ class AppliedToUniversity extends StatelessWidget {
       email: 'sharma.amrit114@gmail.com',
       gender: 'male',
       phoneNo: '+9779847072106',
-      imageURL:
-          'https://firebasestorage.googleapis.com/v0/b/educational-institute-ca530.appspot.com/o/postImage%2Fimage_picker7684379982938842217.jpg?alt=media&token=eabaf719-9461-452d-a5d1-ef2389cf8591',
       universityName: 'Sejong University');
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        StudentInCardView(
-          uniStudent: uniStudent,
-        ),
-        StudentInCardView(
-          uniStudent: uniStudent,
-        ),
-        StudentInCardView(
-          uniStudent: uniStudent,
-        ),
-        StudentInCardView(
-          uniStudent: uniStudent,
-        ),
-        StudentInCardView(
-          uniStudent: uniStudent,
-        ),
-        StudentInCardView(
-          uniStudent: uniStudent,
-        ),
-        StudentInCardView(
-          uniStudent: uniStudent,
-        ),
-        StudentInCardView(
-          uniStudent: uniStudent,
-        ),
-        StudentInCardView(
-          uniStudent: uniStudent,
-        ),
-      ],
-    );
+    return StreamBuilder(
+        stream:
+            FirebaseFirestore.instance.collection('appliedForm').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          else if (snapshot.hasError)
+            return Center(
+              child: Text('Something went wrong'),
+            );
+          else {
+            if (snapshot.data.documents.length > 0)
+              return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot seminar = snapshot.data.documents[index];
+                    AppliedFormModel form =
+                        AppliedFormModel.fromJason(seminar.data());
+                    return StudentInCardView(
+                      uniStudent: form,
+                    );
+                  });
+            else {
+              return Center(
+                child: Text('No Students Applied To University Yet!'),
+              );
+            }
+          }
+        });
   }
 }
 
-class BookedLanguageCourse extends StatelessWidget {
-  BookedFormModel langStudent = BookedFormModel(
-    firstName: 'Amrit',
-    lastName: 'Sharma',
-    choosedClass: 'IELTS',
-    gender: 'male',
-    phoneNo: '+9779847072106',
-    email: 'sharma.amrit114@gmail.com',
-    shift: 'morning',
-    paymentOption: 'e-sewa',
-    receiptURL:
-        'https://firebasestorage.googleapis.com/v0/b/educational-institute-ca530.appspot.com/o/postImage%2Fimage_picker7684379982938842217.jpg?alt=media&token=eabaf719-9461-452d-a5d1-ef2389cf8591',
-    estimatedStartingDate: DateTime.now(),
-  );
+class BookedLanguageCourse extends StatefulWidget {
+  @override
+  _BookedLanguageCourseState createState() => _BookedLanguageCourseState();
+}
+
+class _BookedLanguageCourseState extends State<BookedLanguageCourse> {
+  // BookedFormModel langStudent = BookedFormModel(
+  //   firstName: 'Amrit',
+  //   lastName: 'Sharma',
+  //   choosedClass: 'IELTS',
+  //   gender: 'male',
+  //   phoneNo: '+9779847072106',
+  //   email: 'sharma.amrit114@gmail.com',
+  //   shift: 'morning',
+  //   paymentOption: 'e-sewa',
+  //   receiptURL:
+  //       'https://firebasestorage.googleapis.com/v0/b/educational-institute-ca530.appspot.com/o/postImage%2Fimage_picker7684379982938842217.jpg?alt=media&token=eabaf719-9461-452d-a5d1-ef2389cf8591',
+  //   estimatedStartingDate: DateTime.now(),
+  // );
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        StudentInCardView(
-          langStudent: langStudent,
-        ),
-        StudentInCardView(
-          langStudent: langStudent,
-        ),
-        StudentInCardView(
-          langStudent: langStudent,
-        ),
-        StudentInCardView(
-          langStudent: langStudent,
-        ),
-        StudentInCardView(
-          langStudent: langStudent,
-        ),
-      ],
-    );
+    return StreamBuilder(
+        stream:
+            FirebaseFirestore.instance.collection('bookedClasses').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          else if (snapshot.hasError)
+            return Center(
+              child: Text('Something went wrong'),
+            );
+          else {
+            if (snapshot.data.documents.length > 0)
+              return ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (context, index) {
+                    DocumentSnapshot seminar = snapshot.data.documents[index];
+                    BookedFormModel form =
+                        BookedFormModel.fromJason(seminar.data());
+                    return StudentInCardView(
+                      langStudent: form,
+                    );
+                  });
+            else {
+              return Center(
+                child: Text('No Students Booked Classes Yet!'),
+              );
+            }
+          }
+        });
   }
 }

@@ -1,4 +1,3 @@
-import 'package:educational_institute/models/applied_university_form_model.dart';
 import 'package:educational_institute/models/booked_class_form_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

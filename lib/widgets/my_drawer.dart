@@ -1,6 +1,6 @@
 import 'package:educational_institute/Screens/Student/Student/about_us.dart';
-import 'package:educational_institute/Screens/Student/Student/apply_now_language.dart';
-import 'package:educational_institute/Screens/Student/Student/seminar.dart';
+import 'package:educational_institute/Screens/Student/Student/booked_class_form.dart';
+import 'package:educational_institute/Screens/Student/Student/seminar_page.dart';
 import 'package:educational_institute/Screens/Student/Student/settings.dart';
 import 'package:flutter/material.dart';
 

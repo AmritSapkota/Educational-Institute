@@ -1,5 +1,8 @@
+import 'package:educational_institute/Services/database_service.dart';
+import 'package:educational_institute/models/seminar_model.dart';
 import 'package:educational_institute/widgets/date_dart.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ScheduleSeminar extends StatefulWidget {
   @override
@@ -7,12 +10,88 @@ class ScheduleSeminar extends StatefulWidget {
 }
 
 class _ScheduleSeminarState extends State<ScheduleSeminar> {
-  DateTime _eventDate;
+  //for Seminar
+  DateTime _eventDate = DateTime.now();
+  TextEditingController _description = TextEditingController();
+  TextEditingController _title = TextEditingController();
+  TextEditingController _link = TextEditingController();
+  TextEditingController _location = TextEditingController();
 
   changedEventDate(value) {
     setState(() {
       _eventDate = value;
     });
+  }
+
+  GlobalKey<FormState> _formKey = GlobalKey();
+
+  resetForm() {
+    _link.clear();
+    _title.clear();
+    _description.clear();
+    _eventDate = DateTime.now();
+    _location.clear();
+  }
+
+  dialogOnSubmitButton() => showDialog(
+      useRootNavigator: false,
+      context: context,
+      builder: (context) {
+        Widget cancelButton = FlatButton(
+          child: Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        );
+        Widget continueButton = FlatButton(
+          child: Text("Continue"),
+          onPressed: () {
+            Navigator.pop(context);
+            uploadSeminar();
+          },
+        );
+        // set up the AlertDialog
+        AlertDialog alert = AlertDialog(
+          title: Text("Confirmation"),
+          content:
+              Text("Seminar is going to be upload. Do you want to continue?"),
+          actions: [
+            cancelButton,
+            continueButton,
+          ],
+        );
+        return alert;
+      });
+  uploadSeminar() async {
+    SeminarModel seminar = SeminarModel(
+      title: _title.text,
+      description: _description.text,
+      date: _eventDate,
+      eId: '',
+      location: _location.text,
+      link: _link.text,
+    );
+    await DatabaseService().seminarToDatabase(seminar).then((value) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            Widget cancelButton = FlatButton(
+              child: Text("Ok"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            );
+            AlertDialog alert = AlertDialog(
+              title: Text("Success"),
+              content: Text("Post uploaded Successfully"),
+              actions: [
+                cancelButton,
+              ],
+            );
+            return alert;
+          });
+    });
+    resetForm();
   }
 
   final double sizeBox = 0.02;
@@ -36,6 +115,7 @@ class _ScheduleSeminarState extends State<ScheduleSeminar> {
                     vertical: size.height * 0.02),
                 child: SingleChildScrollView(
                   child: Form(
+                    key: _formKey,
                     child: Column(
                       children: [
                         Text(
@@ -45,11 +125,25 @@ class _ScheduleSeminarState extends State<ScheduleSeminar> {
                               fontWeight: FontWeight.bold,
                               fontSize: size.height * 0.03),
                         ),
+                        SizedBox(
+                          height: size.height * sizeBox,
+                        ),
                         TextFormField(
+                          controller: _title,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Enter University/Country Name',
                               labelText: 'University / Country'),
+                        ),
+                        SizedBox(
+                          height: size.height * sizeBox,
+                        ),
+                        TextFormField(
+                          controller: _location,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Enter seminar Location',
+                              labelText: 'Location'),
                         ),
                         SizedBox(
                           height: size.height * sizeBox,
@@ -70,6 +164,7 @@ class _ScheduleSeminarState extends State<ScheduleSeminar> {
                             ),
                             Expanded(
                               child: TextFormField(
+                                controller: _description,
                                 maxLines: 5,
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
@@ -83,6 +178,7 @@ class _ScheduleSeminarState extends State<ScheduleSeminar> {
                           height: size.height * sizeBox,
                         ),
                         TextFormField(
+                          controller: _link,
                           decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Enter Meeting Link',
@@ -96,7 +192,9 @@ class _ScheduleSeminarState extends State<ScheduleSeminar> {
                           children: [
                             RaisedButton(
                               color: Colors.blue,
-                              onPressed: () {},
+                              onPressed: () {
+                                dialogOnSubmitButton();
+                              },
                               child: Text(
                                 'Submit',
                                 style: TextStyle(color: Colors.white),
@@ -104,7 +202,11 @@ class _ScheduleSeminarState extends State<ScheduleSeminar> {
                             ),
                             RaisedButton(
                               color: Colors.blue,
-                              onPressed: () {},
+                              onPressed: () {
+                                setState(() {
+                                  resetForm();
+                                });
+                              },
                               child: Text(
                                 'Reset',
                                 style: TextStyle(color: Colors.white),
