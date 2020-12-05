@@ -3,16 +3,17 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 
 class SeminarModel {
-  String description, link, location, eId;
+  String description, link, location, eId, title;
   DateTime date;
 
   SeminarModel({
-  @required this.description,
-  @required this.link,
-  @required this.location,
-  @required this.eId,
-  @required this.date,
-});
+    @required this.description,
+    @required this.link,
+    @required this.location,
+    @required this.eId,
+    @required this.date,
+    @required this.title,
+  });
 
   Map<String, dynamic> toJason() {
     return {
@@ -21,6 +22,7 @@ class SeminarModel {
       'location': location,
       'eId': eId,
       'date': date,
+      'title': title,
     };
   }
 
@@ -29,6 +31,7 @@ class SeminarModel {
     link = seminar['link'];
     location = seminar['location'];
     eId = seminar['eId'];
-    date = seminar['date'];
+    date = seminar['date'].toDate();
+    title = seminar['title'];
   }
 }

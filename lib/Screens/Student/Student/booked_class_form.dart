@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:educational_institute/Screens/StudentScreen.dart';
+import 'package:educational_institute/Services/database_service.dart';
+import 'package:educational_institute/models/booked_class_form_model.dart';
 import 'package:educational_institute/widgets/date_dart.dart';
-import 'package:path/path.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -13,14 +15,20 @@ class ApplyNowForLanguageCourse extends StatefulWidget {
 
 //TODO: validation for all the field and disposing controllers
 class _ApplyNowForLanguageCourseState extends State<ApplyNowForLanguageCourse> {
-  DateTime dob;
+  TextEditingController _fname = TextEditingController();
+  TextEditingController _lname = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _phoneNo = TextEditingController();
+
+  DateTime startingDate;
   changeDob(newValue) {
     setState(() {
-      dob = newValue;
+      startingDate = newValue;
     });
   }
 
   File _image;
+  String receiptURL;
   final picker = ImagePicker();
 
   Future getImage() async {
@@ -86,6 +94,53 @@ class _ApplyNowForLanguageCourseState extends State<ApplyNowForLanguageCourse> {
     return null;
   }
 
+  submitForm(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        });
+    await DatabaseService().imageToStorage(_image).then((value) {
+      setState(() {
+        receiptURL = value;
+      });
+    });
+
+    BookedFormModel form = BookedFormModel(
+      firstName: _fname.text,
+      lastName: _lname.text,
+      email: _email.text,
+      phoneNo: _phoneNo.text,
+      gender: _selectedGender,
+      choosedClass: _chooseClass,
+      shift: _shift,
+      paymentOption: _payment,
+      estimatedStartingDate: startingDate,
+      receiptURL: receiptURL,
+    );
+
+    DatabaseService().bookClassFormToDatabase(form).then((value) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      // Navigator.of(context).pushReplacement(
+      //   MaterialPageRoute(
+      //     builder: (context) => StudentScreen(),
+      //   ),
+      // );
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Success'),
+            );
+          });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -135,6 +190,7 @@ class _ApplyNowForLanguageCourseState extends State<ApplyNowForLanguageCourse> {
                                     children: [
                                       Expanded(
                                         child: TextFormField(
+                                          controller: _fname,
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(),
                                             labelText: 'First Name',
@@ -149,6 +205,7 @@ class _ApplyNowForLanguageCourseState extends State<ApplyNowForLanguageCourse> {
                                       ),
                                       Expanded(
                                         child: TextFormField(
+                                          controller: _lname,
                                           validator: _textFieldValidator,
                                           decoration: InputDecoration(
                                             prefixIcon:
@@ -163,6 +220,7 @@ class _ApplyNowForLanguageCourseState extends State<ApplyNowForLanguageCourse> {
                                   Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: TextFormField(
+                                      controller: _email,
                                       decoration: InputDecoration(
                                           prefixIcon: Icon(Icons.email),
                                           border: OutlineInputBorder(),
@@ -173,6 +231,7 @@ class _ApplyNowForLanguageCourseState extends State<ApplyNowForLanguageCourse> {
                                   Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: TextFormField(
+                                      controller: _phoneNo,
                                       decoration: InputDecoration(
                                           prefixIcon: Icon(Icons.phone_android),
                                           border: OutlineInputBorder(),
@@ -352,7 +411,7 @@ class _ApplyNowForLanguageCourseState extends State<ApplyNowForLanguageCourse> {
                                             'Payment Receipt',
                                             style: TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: size.width * 0.04 ,
+                                              fontSize: size.width * 0.04,
                                             ),
                                           ),
                                         ),
@@ -384,7 +443,9 @@ class _ApplyNowForLanguageCourseState extends State<ApplyNowForLanguageCourse> {
                   width: size.width * 0.5,
                   child: FlatButton(
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {}
+                      if (_formKey.currentState.validate()) {
+                        submitForm(context);
+                      }
                     },
                     child:
                         Text('SUBMIT', style: TextStyle(color: Colors.white)),

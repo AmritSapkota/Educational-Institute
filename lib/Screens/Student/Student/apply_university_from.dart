@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:educational_institute/Screens/StudentScreen.dart';
+import 'package:educational_institute/Services/database_service.dart';
+import 'package:educational_institute/models/applied_university_form_model.dart';
 import 'package:educational_institute/widgets/date_dart.dart';
 import 'package:path/path.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,25 +15,19 @@ class ApplyNowForUniversity extends StatefulWidget {
 
 //TODO: validation for all the field
 class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
+  //form values
+  TextEditingController _fname = TextEditingController();
+  TextEditingController _lname = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _phoneNo = TextEditingController();
+  TextEditingController _address = TextEditingController();
+  TextEditingController _qualificaiton = TextEditingController();
+  TextEditingController _courses = TextEditingController();
+
   DateTime dob;
   changeDob(newValue) {
     setState(() {
       dob = newValue;
-    });
-  }
-
-  File _image;
-  final picker = ImagePicker();
-
-  Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
     });
   }
 
@@ -65,6 +62,42 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
   String _genderValidator(value) {
     if (value == null) return 'Please Select Gender*';
     return null;
+  }
+
+  submitForm(BuildContext context) async {
+    AppliedFormModel form = AppliedFormModel(
+      firstName: _fname.text,
+      lastName: _lname.text,
+      email: _email.text,
+      phoneNo: _phoneNo.text,
+      gender: _selectedGender,
+      dob: dob,
+      address: _address.text,
+      qualification: _qualificaiton.text,
+      courses: _courses.text,
+      universityName: '',
+    );
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        });
+    DatabaseService().applyFormToDatabase(form).then((value) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => StudentScreen()));
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Success'),
+            );
+          });
+    });
   }
 
   @override
@@ -116,6 +149,7 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
                                     children: [
                                       Expanded(
                                         child: TextFormField(
+                                          controller: _fname,
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(),
                                             labelText: 'First Name',
@@ -130,6 +164,7 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
                                       ),
                                       Expanded(
                                         child: TextFormField(
+                                          controller: _lname,
                                           validator: _textFieldValidator,
                                           decoration: InputDecoration(
                                             prefixIcon:
@@ -144,6 +179,7 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
                                   Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: TextFormField(
+                                      controller: _email,
                                       decoration: InputDecoration(
                                           prefixIcon: Icon(Icons.email),
                                           border: OutlineInputBorder(),
@@ -154,6 +190,7 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
                                   Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: TextFormField(
+                                      controller: _phoneNo,
                                       decoration: InputDecoration(
                                           prefixIcon: Icon(Icons.phone_android),
                                           border: OutlineInputBorder(),
@@ -206,44 +243,9 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
                                     height: 10,
                                   ),
                                   Container(
-                                    height: size.height * 0.07,
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    decoration: BoxDecoration(
-                                      border:
-                                          Border.all(color: Colors.grey[400]),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              right: size.width * 0.05,
-                                              left: size.width * 0.05),
-                                          child: Text(
-                                            'image',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: size.width * 0.05,
-                                            ),
-                                          ),
-                                        ),
-                                        RaisedButton(
-                                          onPressed: () {
-                                            getImage();
-                                          },
-                                          child: Text('Choose File'),
-                                        ),
-                                        _image == null
-                                            ? Container()
-                                            : Icon(
-                                                Icons.check,
-                                                color: Colors.red,
-                                              ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: TextFormField(
+                                      controller: _address,
                                       decoration: InputDecoration(
                                           prefixIcon: Icon(Icons.location_on),
                                           border: OutlineInputBorder(),
@@ -255,6 +257,7 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
                                   Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: TextFormField(
+                                      controller: _qualificaiton,
                                       decoration: InputDecoration(
                                         prefixIcon:
                                             Icon(Icons.insert_drive_file),
@@ -266,6 +269,7 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
                                   Container(
                                     padding: EdgeInsets.symmetric(vertical: 10),
                                     child: TextFormField(
+                                      controller: _courses,
                                       decoration: InputDecoration(
                                         prefixIcon: Icon(Icons.golf_course),
                                         border: OutlineInputBorder(),
@@ -286,7 +290,9 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
                   width: size.width * 0.5,
                   child: FlatButton(
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {}
+                      if (_formKey.currentState.validate()) {
+                        submitForm(context);
+                      }
                     },
                     child: Text('Apply', style: TextStyle(color: Colors.white)),
                     textColor: Colors.white,

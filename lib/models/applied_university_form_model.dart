@@ -7,7 +7,6 @@ class AppliedFormModel {
       email,
       phoneNo,
       gender,
-      imageURL,
       address,
       qualification,
       courses,
@@ -21,7 +20,6 @@ class AppliedFormModel {
     @required this.email,
     @required this.phoneNo,
     @required this.gender,
-    @required this.imageURL,
     @required this.address,
     @required this.qualification,
     @required this.courses,
@@ -34,11 +32,10 @@ class AppliedFormModel {
     email = appliedForm['email'];
     phoneNo = appliedForm['phoneNo'];
     gender = appliedForm['gender'];
-    imageURL = appliedForm['imageURL'];
     address = appliedForm['address'];
     qualification = appliedForm['qualification'];
     courses = appliedForm['courses'];
-    dob = appliedForm['dob'];
+    dob = appliedForm['dob'].toDate();
     universityName = appliedForm['universityName'];
   }
 
@@ -49,7 +46,6 @@ class AppliedFormModel {
       'email': email,
       'phoneNo': phoneNo,
       'gender': gender,
-      'imageURL': imageURL,
       'address': address,
       'qualification': qualification,
       'courses': courses,

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:educational_institute/Screens/Student/Student/apply_now_university.dart';
+import 'package:educational_institute/Screens/Student/Student/apply_university_from.dart';
 import 'package:educational_institute/Services/readmore_text.dart';
 import 'package:educational_institute/Services/show_dialogue.dart';
 import 'package:educational_institute/models/post_model.dart';
@@ -7,15 +7,14 @@ import 'package:flutter/material.dart';
 
 class MyPost extends StatefulWidget {
   PostModel post;
-  CollectionReference reference;
-  MyPost({@required this.post, @required this.reference});
+  MyPost({@required this.post});
   @override
   _MyPostState createState() => _MyPostState();
 }
 
 class _MyPostState extends State<MyPost> {
   bool liked = false;
-  int _likeCount;
+  //int _likeCount;
   getImage(String imageURL) {
     if (imageURL != null)
       return Image.network(
@@ -55,6 +54,7 @@ class _MyPostState extends State<MyPost> {
           minHeight: size.height * 0.3,
           minWidth: size.width,
         ),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

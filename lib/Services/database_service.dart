@@ -49,9 +49,9 @@ class DatabaseService {
     }
   }
 
-  Future<void> bookClassFormToDatabase(BookedFormModel post) async {
+  Future<void> bookClassFormToDatabase(BookedFormModel form) async {
     try {
-      await cloudRef.collection('bookedClasses').doc().set(post.toJason());
+      await cloudRef.collection('bookedClasses').doc().set(form.toJason());
       return;
     } on Exception catch (e) {
       print("failed to add data to firestore with e: $e");

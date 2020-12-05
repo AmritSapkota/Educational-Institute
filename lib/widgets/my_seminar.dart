@@ -1,7 +1,11 @@
 import 'package:educational_institute/Services/readmore_text.dart';
+import 'package:educational_institute/models/seminar_model.dart';
 import 'package:flutter/material.dart';
 
-class SeminarPost extends StatelessWidget {
+class Seminar extends StatelessWidget {
+  SeminarModel seminar;
+  Seminar({@required this.seminar});
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -10,10 +14,11 @@ class SeminarPost extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(
             horizontal: size.width * 0.03, vertical: size.height * 0.015),
+
         // height: size.height * 0.3,
         // width: size.width,
         constraints: BoxConstraints(
-          minHeight: size.height * 0.2,
+          minHeight: size.height * 0.1,
           minWidth: size.width,
         ),
         decoration: BoxDecoration(
@@ -26,7 +31,7 @@ class SeminarPost extends StatelessWidget {
               )
             ],
             color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(size.width * 0.01))),
+            borderRadius: BorderRadius.all(Radius.circular(size.width * 0.03))),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -53,7 +58,7 @@ class SeminarPost extends StatelessWidget {
               height: size.height * 0.01,
             ),
             ReadMoreText(
-              'Description of the nation as of it is  in the nepali nation and the order of the nation is really intriguging as of now in order to build a university of your choice is just a dummy text',
+              seminar.description,
               trimLines: 3,
               colorClickableText: Colors.blueAccent,
               trimMode: TrimMode.Line,
@@ -61,16 +66,58 @@ class SeminarPost extends StatelessWidget {
               trimExpandedText: ' show less',
             ),
             SizedBox(
-              height: size.height * 0.01,
+              height: size.height * 0.02,
             ),
-            Text('Time : 10.00pm +GST'),
+            Divider(),
+            Row(
+              children: [
+                Text(
+                  "University/Country: ",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+                Text(seminar.title),
+              ],
+            ),
             SizedBox(
               height: size.height * 0.01,
             ),
-            Text('Location : Seoul, Gwanjin-Gu, Gunja-ro, 18 gil'),
+            Divider(),
+            Row(
+              children: [
+                Text(
+                  'Date: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+                Text(
+                    '${seminar.date.year}-${seminar.date.month}-${seminar.date.day}'),
+              ],
+            ),
             SizedBox(
               height: size.height * 0.01,
             ),
+            Divider(),
+            Row(
+              children: [
+                Text(
+                  "Location: ",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+                Text(seminar.location),
+              ],
+            ),
+            SizedBox(
+              height: size.height * 0.01,
+            ),
+            Divider(),
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               RaisedButton(
                 color: Colors.blue,

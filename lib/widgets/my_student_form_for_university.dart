@@ -109,26 +109,6 @@ class _MyStudentFormForUniversityState
                             title: widget.student.universityName,
                             icon: Icons.school,
                           ),
-                          widget.student.imageURL == ''
-                              ? Container(
-                                  child: Text(
-                                    'No Receipt Available',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                )
-                              : Container(
-                                  padding: EdgeInsets.only(
-                                    bottom: size.width * 0.03,
-                                  ),
-                                  height: size.height * 0.3,
-                                  width: size.width,
-                                  child: Image.network(
-                                    widget.student.imageURL,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
                         ],
                       ),
                     ),

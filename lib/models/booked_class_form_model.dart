@@ -31,7 +31,7 @@ class BookedFormModel {
     email = languageStudent['email'];
     shift = languageStudent['shift'];
     choosedClass = languageStudent['choosedClass'];
-    estimatedStartingDate = languageStudent['estimatedStartingDate'];
+    estimatedStartingDate = languageStudent['estimatedStartingDate'].toDate();
     gender = languageStudent['gender'];
     phoneNo = languageStudent['phoneNo'];
     paymentOption = languageStudent['paymentOption'];
