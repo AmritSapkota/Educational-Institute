@@ -1,6 +1,5 @@
 import 'dart:ffi';
 import 'dart:ui';
-
 import 'package:educational_institute/Screens/MainScreen.dart';
 import 'package:educational_institute/Screens/Subscreens/add_employee.dart';
 import 'package:educational_institute/Screens/Subscreens/add_post.dart';

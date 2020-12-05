@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:educational_institute/Screens/Student/Student/apply_university_from.dart';
+import 'package:educational_institute/Screens/Student/apply_university_from.dart';
 import 'package:educational_institute/Services/readmore_text.dart';
 import 'package:educational_institute/Services/show_dialogue.dart';
 import 'package:educational_institute/models/post_model.dart';

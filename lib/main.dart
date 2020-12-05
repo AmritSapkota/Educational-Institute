@@ -1,22 +1,10 @@
-import 'package:educational_institute/Screens/InstituteScreen.dart';
-import 'package:educational_institute/Screens/Student/Student/booked_class_form.dart';
-import 'package:educational_institute/Screens/Student/Student/apply_university_from.dart';
-import 'package:educational_institute/Screens/Student/Student/seminar_page.dart';
-import 'package:educational_institute/Screens/StudentScreen.dart';
-import 'package:educational_institute/Screens/Subscreens/add_employee.dart';
-import 'package:educational_institute/Screens/Subscreens/add_post.dart';
-import 'package:educational_institute/Screens/Subscreens/my_profile.dart';
-import 'package:educational_institute/Screens/Subscreens/schedule_seminar.dart';
+import 'package:educational_institute/Screens/MainScreen.dart';
 import 'package:educational_institute/Screens/Subscreens/student_info.dart';
-import 'package:educational_institute/widgets/my_post.dart';
-import 'package:educational_institute/widgets/my_student_form_for_language.dart';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'Screens/MainScreen.dart';
-
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -46,7 +34,7 @@ class App extends StatelessWidget {
 
         // if firebase installed and has network connection then we proceed, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return StudentInfo();
+          return MainScreen();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
