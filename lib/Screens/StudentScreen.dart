@@ -14,9 +14,11 @@ class StudentScreen extends StatefulWidget {
 
 class _StudentScreenState extends State<StudentScreen> {
   TextEditingController _search = TextEditingController();
+  FocusNode _focusNode = FocusNode();
   Future<List> _posts;
 
   bool isSearching = false;
+  String searchText = '';
   Stream _notSearchingStream = FirebaseFirestore.instance
       .collection('posts')
       .orderBy('postTime', descending: true)
@@ -109,9 +111,12 @@ class _StudentScreenState extends State<StudentScreen> {
                         vertical: size.height * 0.02,
                         horizontal: size.width * 0.05),
                     child: TextFormField(
+                        focusNode: _focusNode,
                         onChanged: (value) {
                           setState(() {
-                            _search.text = value;
+                            searchText = value;
+                            _search.selection = TextSelection.fromPosition(
+                                TextPosition(offset: searchText.length));
                           });
                         },
                         controller: _search,
@@ -168,11 +173,10 @@ class _StudentScreenState extends State<StudentScreen> {
                       itemCount: snapshot.data.documents.length,
                       itemBuilder: (context, index) {
                         DocumentSnapshot post = snapshot.data.documents[index];
-                        print(post.toString());
                         if (isSearching) {
                           if (post['university']
                               .toLowerCase()
-                              .contains(_search.text.toLowerCase())) {
+                              .contains(searchText.toLowerCase())) {
                             return MyPost(
                               post: PostModel(
                                 postId: post.id,
