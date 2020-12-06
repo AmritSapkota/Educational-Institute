@@ -2,13 +2,17 @@ import 'dart:io';
 import 'package:educational_institute/Screens/StudentScreen.dart';
 import 'package:educational_institute/Services/database_service.dart';
 import 'package:educational_institute/models/applied_university_form_model.dart';
+import 'package:educational_institute/models/post_model.dart';
 import 'package:educational_institute/widgets/date_dart.dart';
+import 'package:educational_institute/widgets/my_post.dart';
 import 'package:path/path.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ApplyNowForUniversity extends StatefulWidget {
+  PostModel post;
+  ApplyNowForUniversity({@required this.post});
   @override
   _ApplyNowForUniversityState createState() => _ApplyNowForUniversityState();
 }
@@ -24,7 +28,7 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
   TextEditingController _qualificaiton = TextEditingController();
   TextEditingController _courses = TextEditingController();
 
-  DateTime dob;
+  DateTime dob = DateTime.now();
   changeDob(newValue) {
     setState(() {
       dob = newValue;
@@ -75,7 +79,7 @@ class _ApplyNowForUniversityState extends State<ApplyNowForUniversity> {
       address: _address.text,
       qualification: _qualificaiton.text,
       courses: _courses.text,
-      universityName: '',
+      universityName: widget.post.university,
     );
     showDialog(
         context: context,

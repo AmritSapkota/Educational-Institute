@@ -1,8 +1,69 @@
 import 'package:educational_institute/Services/current_date_time.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DialogServices {
+  showConfirmDialog(
+      {BuildContext context, String confirmMessage, Function onContinue}) {
+    showDialog(
+        useRootNavigator: false,
+        context: context,
+        builder: (context) {
+          Widget cancelButton = FlatButton(
+            child: Text("Cancel"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          );
+          Widget continueButton = FlatButton(
+            child: Text("Continue"),
+            onPressed: () {
+              onContinue;
+            },
+          );
+          // set up the AlertDialog
+          AlertDialog alert = AlertDialog(
+            title: Text("Confirmation"),
+            content: Text(confirmMessage),
+            actions: [
+              cancelButton,
+              continueButton,
+            ],
+          );
+          return alert;
+        });
+  }
+
+  showSuccessDialog(context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(children: [
+            Center(
+              child: Text('Success'),
+            ),
+          ]);
+        });
+  }
+
+  showLoadingDialog(context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            children: [
+              Container(
+                color: Colors.transparent,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
   showLoaderDialog(BuildContext context, String text) {
     AlertDialog alert = AlertDialog(
       content: new Row(

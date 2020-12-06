@@ -6,7 +6,8 @@ class PostModel {
   String postType, description, imageURL, country, university;
   String postTime;
   int reacts, commentId;
-  String postId;
+  String
+      postId; //post id is only given when we get data from fireStore and is equal to document id
   String eId;
 
   //final UserModel author;

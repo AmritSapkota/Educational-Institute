@@ -1,6 +1,7 @@
 import 'package:educational_institute/Services/readmore_text.dart';
 import 'package:educational_institute/models/seminar_model.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Seminar extends StatelessWidget {
   SeminarModel seminar;
@@ -121,7 +122,31 @@ class Seminar extends StatelessWidget {
             Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               RaisedButton(
                 color: Colors.blue,
-                onPressed: () {},
+                onPressed: () async {
+                  if (await canLaunch(seminar.link)) {
+                    await launch(
+                      seminar.link,
+                      forceWebView: false,
+                    );
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (_) {
+                          return SimpleDialog(
+                            children: [
+                              Center(
+                                child: Text(
+                                  'invalid link!',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: size.aspectRatio * 50.0),
+                                ),
+                              )
+                            ],
+                          );
+                        });
+                  }
+                },
                 child: Text(
                   'Join Meeting',
                   style: TextStyle(color: Colors.white),

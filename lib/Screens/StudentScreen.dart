@@ -15,7 +15,12 @@ class StudentScreen extends StatefulWidget {
 class _StudentScreenState extends State<StudentScreen> {
   TextEditingController _search = TextEditingController();
   Future<List> _posts;
-  bool isSearhing = false;
+
+  bool isSearching = false;
+  Stream _notSearchingStream = FirebaseFirestore.instance
+      .collection('posts')
+      .orderBy('postTime', descending: true)
+      .snapshots();
 
   //getting post
   getPost() {}
@@ -89,7 +94,7 @@ class _StudentScreenState extends State<StudentScreen> {
                 ),
                 onPressed: () {
                   setState(() {
-                    isSearhing = !isSearhing;
+                    isSearching = !isSearching;
                   });
                 },
               ),
@@ -98,12 +103,17 @@ class _StudentScreenState extends State<StudentScreen> {
         ),
         body: Column(
           children: [
-            isSearhing
+            isSearching
                 ? Padding(
                     padding: EdgeInsets.symmetric(
                         vertical: size.height * 0.02,
                         horizontal: size.width * 0.05),
                     child: TextFormField(
+                        onChanged: (value) {
+                          setState(() {
+                            _search.text = value;
+                          });
+                        },
                         controller: _search,
                         style: TextStyle(
                           color: Colors.white,
@@ -141,8 +151,7 @@ class _StudentScreenState extends State<StudentScreen> {
                 : Container(),
             Flexible(
               child: StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection('posts').snapshots(),
+                stream: _notSearchingStream,
                 builder: (_, snapshot) {
                   if (!snapshot.hasData) {
                     return Center(
@@ -160,20 +169,42 @@ class _StudentScreenState extends State<StudentScreen> {
                       itemBuilder: (context, index) {
                         DocumentSnapshot post = snapshot.data.documents[index];
                         print(post.toString());
-                        return MyPost(
-                          post: PostModel(
-                            postId: post.id,
-                            postType: post['postType'],
-                            description: post['description'],
-                            postTime: post['postTime'],
-                            imageURL: post['imageURL'],
-                            commentId: post['commentId'],
-                            country: post['country'],
-                            university: post['university'],
-                            eId: post['eId'],
-                            reacts: post['reacts'],
-                          ),
-                        );
+                        if (isSearching) {
+                          if (post['university']
+                              .toLowerCase()
+                              .contains(_search.text.toLowerCase())) {
+                            return MyPost(
+                              post: PostModel(
+                                postId: post.id,
+                                postType: post['postType'],
+                                description: post['description'],
+                                postTime: post['postTime'],
+                                imageURL: post['imageURL'],
+                                commentId: post['commentId'],
+                                country: post['country'],
+                                university: post['university'],
+                                eId: post['eId'],
+                                reacts: post['reacts'],
+                              ),
+                            );
+                          } else
+                            return Container();
+                        } else {
+                          return MyPost(
+                            post: PostModel(
+                              postId: post.id,
+                              postType: post['postType'],
+                              description: post['description'],
+                              postTime: post['postTime'],
+                              imageURL: post['imageURL'],
+                              commentId: post['commentId'],
+                              country: post['country'],
+                              university: post['university'],
+                              eId: post['eId'],
+                              reacts: post['reacts'],
+                            ),
+                          );
+                        }
                       },
                     );
                   }

@@ -8,6 +8,13 @@ class ManagePost extends StatelessWidget {
       home: SafeArea(
         child: Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              color: Colors.white,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
             title: Text(
               "Manage Post",
             ),

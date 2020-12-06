@@ -1,10 +1,16 @@
+import 'package:educational_institute/Screens/InstituteScreen.dart';
 import 'package:educational_institute/Screens/MainScreen.dart';
-import 'package:educational_institute/Screens/Subscreens/student_info.dart';
+import 'package:educational_institute/Screens/Student/seminar_page.dart';
+import 'package:educational_institute/Screens/Subscreens/add_employee.dart';
+import 'package:educational_institute/Screens/Subscreens/manage_employee.dart';
+import 'package:educational_institute/Services/shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'Screens/StudentScreen.dart';
+
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -18,7 +24,21 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  String userType;
+  _AppState() {
+    SharedPrefService().getFromSharedPref(key: 'userType').then((value) {
+      setState(() {
+        userType = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -34,7 +54,11 @@ class App extends StatelessWidget {
 
         // if firebase installed and has network connection then we proceed, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return MainScreen();
+          return userType == 'student'
+              ? StudentScreen()
+              : userType == null
+                  ? MainScreen()
+                  : InstituteScreen();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

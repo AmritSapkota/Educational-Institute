@@ -1,6 +1,7 @@
 import 'package:educational_institute/Screens/lib/colors.dart';
 import 'package:educational_institute/Services/current_date_time.dart';
 import 'package:educational_institute/Services/database_service.dart';
+import 'package:educational_institute/Services/shared_pref.dart';
 import 'package:educational_institute/Services/show_dialogue.dart';
 import 'package:educational_institute/models/post_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -49,10 +50,14 @@ class _AddPostState extends State<AddPost> {
         _uploadedFileURL = fileURL;
       });
     }
+    String userId;
+    SharedPrefService().getFromSharedPref(key: 'userId').then((value) {
+      userId = value;
+    });
     //uploading post
     PostModel post = PostModel(
       postId: '',
-      eId: '',
+      eId: userId,
       country: _country.text,
       university: _university.text,
       description: _description.text,
@@ -67,7 +72,9 @@ class _AddPostState extends State<AddPost> {
         context: context,
         builder: (context) {
           return SimpleDialog(
-            title: Center(child: Text('Successfully Uploaded Post')),
+            children: [
+              Center(child: Text('Successfully Uploaded Post')),
+            ],
           );
         }));
     Navigator.pop(context);
@@ -95,6 +102,13 @@ class _AddPostState extends State<AddPost> {
         home: SafeArea(
           child: Scaffold(
             appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                color: Colors.white,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
               title: Text('Add Post'),
             ),
             body: SingleChildScrollView(

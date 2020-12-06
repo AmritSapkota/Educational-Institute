@@ -1,25 +1,131 @@
 import 'dart:core';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:educational_institute/Services/AuthentificationSerivce.dart';
+import 'package:educational_institute/Services/database_service.dart';
+import 'package:educational_institute/Services/shared_pref.dart';
 import 'package:educational_institute/models/employee_model.dart';
 import 'package:flutter/material.dart';
 
+class UserProfile extends StatefulWidget {
+  @override
+  _UserProfileState createState() => _UserProfileState();
+}
+
+class _UserProfileState extends State<UserProfile> {
+  String userId;
+
+  _UserProfileState() {
+    SharedPrefService().getFromSharedPref(key: 'userId').then((value) {
+      setState(() {
+        userId = value;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<DocumentSnapshot>(
+      //TODO: change User id to current user Id
+      future: FirebaseFirestore.instance
+          .collection('Employee')
+          .doc('QSzJfg4fafxqth1jaaWN')
+          .get(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container(
+            color: Colors.white,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else {
+          EmployeeModel user = EmployeeModel.fromJason(snapshot.data.data());
+          return MyProfile(
+            employee: user,
+          );
+        }
+      },
+    );
+  }
+}
+
 class MyProfile extends StatefulWidget {
+  EmployeeModel employee;
+  MyProfile({@required this.employee});
   @override
   _MyProfileState createState() => _MyProfileState();
 }
 
 class _MyProfileState extends State<MyProfile> {
-  EmployeeModel _employeeModel = EmployeeModel(
-    firstName: 'Amrit',
-    lastName: 'Sharma',
-    address: 'Seoul, Gwanjin-Gu, Gunja-ro',
-    email: 'sharma.amrit114@gmail.com',
-    eId: '',
-    createdAt: DateTime.now(),
-    imageURL:
-        'https://images.pexels.com/photos/3307758/pexels-photo-3307758.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250',
-    phoneNumber: '+977-98472-41980',
-  );
+  TextEditingController _fName = TextEditingController();
+  TextEditingController _lName = TextEditingController();
+  TextEditingController _address = TextEditingController();
+  TextEditingController _phoneNo = TextEditingController();
+  TextEditingController _password = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  showDialogBox(title, message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        Widget cancelButton = FlatButton(
+          child: Text("Cancel"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        );
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            cancelButton,
+          ],
+        );
+      },
+    );
+  }
+
+  _updateAccount() {
+    //this is synchronous function
+    //checking name
+    if (_fName.text.isNotEmpty) {
+      widget.employee.firstName = _fName.text;
+    }
+    //checking name
+    if (_lName.text.isNotEmpty) {
+      widget.employee.lastName = _lName.text;
+    }
+    //checking address
+    if (_address.text.isNotEmpty) {
+      widget.employee.address = _address.text;
+    }
+    //checking phoneNo
+    if (_phoneNo.text.isNotEmpty) {
+      widget.employee.phoneNumber = _phoneNo.text;
+    }
+    if (_password.text.isNotEmpty) {
+      _changeUserData(changePassword: true);
+    } else {
+      _changeUserData(changePassword: false);
+    }
+  }
+
+  _changeUserData({bool changePassword}) async {
+    await DatabaseService().updateEmployee(widget.employee).then((value) {
+      if (changePassword) {
+        AuthServices().changeCurrentUsersPassword(_password.text).then((value) {
+          showDialogBox('Success', 'password Updated');
+        }).catchError((e) {
+          showDialogBox("Error", e.toString());
+        });
+      }
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => MyProfile()));
+      showDialogBox('Success', 'User updated');
+    }).catchError((e) {
+      showDialogBox('Error', e.toString());
+    });
+  }
 
   bool showPassword = false;
 
@@ -55,20 +161,26 @@ class _MyProfileState extends State<MyProfile> {
                       width: 130,
                       height: 130,
                       decoration: BoxDecoration(
-                          border: Border.all(width: 4, color: Colors.blue),
-                          boxShadow: [
-                            BoxShadow(
-                                spreadRadius: 2,
-                                blurRadius: 10,
-                                color: Colors.black.withOpacity(0.1),
-                                offset: Offset(0, 10))
-                          ],
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                _employeeModel.imageURL,
-                              ))),
+                        border: Border.all(width: 4, color: Colors.blue),
+                        boxShadow: [
+                          BoxShadow(
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              color: Colors.black.withOpacity(0.1),
+                              offset: Offset(0, 10))
+                        ],
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    CircleAvatar(
+                      radius: 30.0,
+                      backgroundImage: widget.employee.imageURL != null
+                          ? NetworkImage("${widget.employee.imageURL}")
+                          : Text(
+                              "${widget.employee.firstName[0].toUpperCase()}",
+                              style: TextStyle(fontSize: 40.0),
+                            ),
+                      backgroundColor: Colors.transparent,
                     ),
                     Positioned(
                         bottom: 0,
@@ -101,13 +213,11 @@ class _MyProfileState extends State<MyProfile> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 35.0),
                 child: TextField(
+                  controller: _fName,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(bottom: 3),
-                    labelText: 'Full Name',
+                    labelText: 'First Name',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    hintText: _employeeModel.firstName +
-                        " " +
-                        _employeeModel.lastName,
                     hintStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -119,27 +229,42 @@ class _MyProfileState extends State<MyProfile> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 35.0),
                 child: TextField(
+                  controller: _lName,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(bottom: 3),
+                    labelText: 'last Name',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    hintStyle: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 35.0),
+                child: TextField(
+                  enableInteractiveSelection: false,
+                  onTap: () {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                  },
+                  controller: _email,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(bottom: 3),
                     labelText: 'Email',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    hintText: _employeeModel.email,
-                    hintStyle: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 35.0),
                 child: TextField(
+                  controller: _address,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(bottom: 3),
                     labelText: 'Address',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    hintText: _employeeModel.address,
                     hintStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -151,11 +276,11 @@ class _MyProfileState extends State<MyProfile> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 35.0),
                 child: TextField(
+                  controller: _phoneNo,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.only(bottom: 3),
                     labelText: 'Mobile Number',
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    hintText: _employeeModel.phoneNumber,
                     hintStyle: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -167,10 +292,7 @@ class _MyProfileState extends State<MyProfile> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 35.0),
                 child: TextField(
-                  //enableInteractiveSelection: false,
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                  },
+                  controller: _password,
                   obscureText: showPassword ? false : true,
                   decoration: InputDecoration(
                       suffixIcon: IconButton(
@@ -185,7 +307,7 @@ class _MyProfileState extends State<MyProfile> {
                         ),
                       ),
                       contentPadding: EdgeInsets.only(bottom: 3),
-                      labelText: 'First Password',
+                      labelText: 'Password',
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       hintText: '*********',
                       hintStyle: TextStyle(
@@ -215,8 +337,44 @@ class _MyProfileState extends State<MyProfile> {
                             color: Colors.black)),
                   ),
                   RaisedButton(
-                    onPressed: () {},
-                    color: Colors.green,
+                    onPressed: () {
+                      FocusScopeNode currentFocus = FocusScope.of(context);
+                      //if it still lacks focus unfocus the focus item
+                      if (!currentFocus.hasPrimaryFocus) {
+                        currentFocus.unfocus();
+                      }
+
+                      showDialog(
+                          useRootNavigator: false,
+                          context: context,
+                          builder: (context) {
+                            Widget cancelButton = FlatButton(
+                              child: Text("Cancel"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            );
+                            Widget continueButton = FlatButton(
+                              child: Text("Continue"),
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                await _updateAccount();
+                              },
+                            );
+                            // set up the AlertDialog
+                            AlertDialog alert = AlertDialog(
+                              title: Text("AlertDialog"),
+                              content: Text(
+                                  "Would you like to save changes to profile?"),
+                              actions: [
+                                cancelButton,
+                                continueButton,
+                              ],
+                            );
+                            return alert;
+                          });
+                    },
+                    color: Colors.blue,
                     padding: EdgeInsets.symmetric(horizontal: 50),
                     elevation: 2,
                     shape: RoundedRectangleBorder(

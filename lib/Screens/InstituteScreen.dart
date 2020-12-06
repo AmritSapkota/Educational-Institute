@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:educational_institute/Screens/MainScreen.dart';
 import 'package:educational_institute/Screens/Subscreens/add_employee.dart';
 import 'package:educational_institute/Screens/Subscreens/add_post.dart';
+import 'package:educational_institute/Screens/Subscreens/manage_employee.dart';
 import 'package:educational_institute/Screens/Subscreens/my_profile.dart';
 import 'package:educational_institute/Screens/Subscreens/schedule_seminar.dart';
 import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/navigating_page.dart';
+import 'package:educational_institute/Services/shared_pref.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +22,14 @@ class InstituteScreen extends StatefulWidget {
 }
 
 class _InstituteScreenState extends State<InstituteScreen> {
+  String userType;
+  _InstituteScreenState() {
+    SharedPrefService().getFromSharedPref(key: 'userType').then((value) {
+      setState(() {
+        this.userType = value;
+      });
+    });
+  }
   BoxDecoration _menuDecoration() {
     return BoxDecoration(
         gradient: LinearGradient(
@@ -84,29 +94,35 @@ class _InstituteScreenState extends State<InstituteScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         //crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            decoration: _menuDecoration(),
-                            constraints: _menuConstraints(size),
-                            padding: EdgeInsets.only(left: size.width * 0.1),
-                            alignment: Alignment.centerLeft,
-                            child: FlatButton(
-                              child: Text(
-                                'Add Employee',
-                                style: TextStyle(
-                                  color: Colors.blue[700],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: size.width * 0.05,
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => AddEmployee()));
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.005,
-                          ),
+                          (userType == null)
+                              ? Container(
+                                  decoration: _menuDecoration(),
+                                  constraints: _menuConstraints(size),
+                                  padding:
+                                      EdgeInsets.only(left: size.width * 0.1),
+                                  alignment: Alignment.centerLeft,
+                                  child: FlatButton(
+                                    child: Text(
+                                      'Add Employee',
+                                      style: TextStyle(
+                                        color: Colors.blue[700],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: size.width * 0.05,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (_) => AddEmployee()));
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          userType == null
+                              ? SizedBox(
+                                  height: size.height * 0.005,
+                                )
+                              : Container(),
                           Container(
                             decoration: _menuDecoration(),
                             constraints: _menuConstraints(size),
@@ -130,26 +146,36 @@ class _InstituteScreenState extends State<InstituteScreen> {
                           SizedBox(
                             height: size.height * 0.005,
                           ),
-                          Container(
-                            decoration: _menuDecoration(),
-                            constraints: _menuConstraints(size),
-                            padding: EdgeInsets.only(left: size.width * 0.1),
-                            alignment: Alignment.centerLeft,
-                            child: FlatButton(
-                              child: Text(
-                                'Manage Employee',
-                                style: TextStyle(
-                                  color: Colors.blue[700],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: size.width * 0.05,
-                                ),
-                              ),
-                              onPressed: () {},
-                            ),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.005,
-                          ),
+                          userType == null
+                              ? Container(
+                                  decoration: _menuDecoration(),
+                                  constraints: _menuConstraints(size),
+                                  padding:
+                                      EdgeInsets.only(left: size.width * 0.1),
+                                  alignment: Alignment.centerLeft,
+                                  child: FlatButton(
+                                    child: Text(
+                                      'Manage Employee',
+                                      style: TextStyle(
+                                        color: Colors.blue[700],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: size.width * 0.05,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return ManageEmployee();
+                                      }));
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          userType == null
+                              ? SizedBox(
+                                  height: size.height * 0.005,
+                                )
+                              : Container(),
                           Container(
                             decoration: _menuDecoration(),
                             constraints: _menuConstraints(size),
@@ -170,29 +196,35 @@ class _InstituteScreenState extends State<InstituteScreen> {
                           SizedBox(
                             height: size.height * 0.005,
                           ),
-                          Container(
-                            decoration: _menuDecoration(),
-                            constraints: _menuConstraints(size),
-                            padding: EdgeInsets.only(left: size.width * 0.1),
-                            alignment: Alignment.centerLeft,
-                            child: FlatButton(
-                              child: Text(
-                                'My Profile',
-                                style: TextStyle(
-                                  color: Colors.blue[700],
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: size.width * 0.05,
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => MyProfile()));
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            height: size.height * 0.005,
-                          ),
+                          userType != null
+                              ? Container(
+                                  decoration: _menuDecoration(),
+                                  constraints: _menuConstraints(size),
+                                  padding:
+                                      EdgeInsets.only(left: size.width * 0.1),
+                                  alignment: Alignment.centerLeft,
+                                  child: FlatButton(
+                                    child: Text(
+                                      'My Profile',
+                                      style: TextStyle(
+                                        color: Colors.blue[700],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: size.width * 0.05,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (_) => MyProfile()));
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          userType != null
+                              ? SizedBox(
+                                  height: size.height * 0.005,
+                                )
+                              : Container(),
                           Container(
                             decoration: _menuDecoration(),
                             constraints: _menuConstraints(size),
@@ -231,8 +263,14 @@ class _InstituteScreenState extends State<InstituteScreen> {
                                 ),
                               ),
                               onPressed: () {
-                                AuthServices(FirebaseAuth.instance).signOut();
-                                Navigator.pop(context, null);
+                                AuthServices().signOut();
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MainScreen()),
+                                  (Route<dynamic> route) => route is MainScreen,
+                                );
                               },
                             ),
                           ),

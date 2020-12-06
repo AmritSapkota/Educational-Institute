@@ -1,8 +1,14 @@
 import 'dart:core';
 import 'dart:io';
+import 'package:educational_institute/Services/AuthentificationSerivce.dart';
+import 'package:educational_institute/Services/database_service.dart';
+import 'package:educational_institute/Services/show_dialogue.dart';
 import 'package:educational_institute/models/employee_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../InstituteScreen.dart';
 
 class AddEmployee extends StatefulWidget {
   @override
@@ -13,6 +19,7 @@ class _AddEmployeeState extends State<AddEmployee> {
   GlobalKey<FormState> _formKey = GlobalKey();
   bool showPassword = false;
   File _profilePicture;
+  String _imageURL;
   getImage() async {
     PickedFile pickedImage =
         await ImagePicker().getImage(source: ImageSource.gallery);
@@ -67,6 +74,59 @@ class _AddEmployeeState extends State<AddEmployee> {
       return null;
   }
 
+  createEmployee() {
+    //show dialog
+    DialogServices().showLoadingDialog(context);
+
+    //upload image
+    DatabaseService().imageToStorage(_profilePicture).then((value) {
+      setState(() {
+        _imageURL = value;
+      });
+    });
+
+    //register user :
+    AuthServices()
+        .singUp(email: _email.text, password: _confirmedPassword.text)
+        .then((value) {
+      if (value != null) {
+        //create user to upload in database
+        EmployeeModel employee = EmployeeModel(
+          userType: 'employee',
+          firstName: _fName.text,
+          lastName: _lName.text,
+          email: _email.text,
+          address: _address.text,
+          phoneNumber: _phoneNo.text,
+          imageURL: _imageURL,
+          createdAt: DateTime.now(),
+          eId: value,
+        );
+
+        //signout current user
+        AuthServices().signOut().then((value) {
+          //sign in again as adminstrator
+          AuthServices().signInAsAdimAfterUserCreation().then((value) {
+            //add the employee to database
+            DatabaseService().employeeToDatabase(employee).then((value) {
+              Navigator.of(context).pop();
+              Navigator.of(context)
+                  .pushReplacement(MaterialPageRoute(builder: (context) {
+                return InstituteScreen();
+              }));
+              DialogServices().showSuccessDialog(context);
+              print(FirebaseAuth.instance.currentUser.email);
+            });
+          });
+        }).catchError((e) {
+          print(e);
+        });
+      }
+    });
+
+    //3. create employee object
+  }
+
   @override
   Widget build(BuildContext context) {
     var textStyle = TextStyle(
@@ -74,7 +134,7 @@ class _AddEmployeeState extends State<AddEmployee> {
       fontWeight: FontWeight.bold,
       color: Colors.black,
     );
-    Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Employee'),
@@ -159,7 +219,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                   height: 35,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 35.0),
+                  padding: EdgeInsets.only(bottom: size.height * 0.03),
                   child: TextFormField(
                     style: textStyle,
                     controller: _fName,
@@ -172,7 +232,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 35.0),
+                  padding: EdgeInsets.only(bottom: size.height * 0.03),
                   child: TextFormField(
                     style: textStyle,
                     controller: _lName,
@@ -185,7 +245,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 35.0),
+                  padding: EdgeInsets.only(bottom: size.height * 0.03),
                   child: TextFormField(
                     style: textStyle,
                     controller: _email,
@@ -198,7 +258,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 35.0),
+                  padding: EdgeInsets.only(bottom: size.height * 0.03),
                   child: TextFormField(
                     style: textStyle,
                     controller: _address,
@@ -211,7 +271,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 35.0),
+                  padding: EdgeInsets.only(bottom: size.height * 0.03),
                   child: TextFormField(
                     style: textStyle,
                     controller: _phoneNo,
@@ -224,7 +284,7 @@ class _AddEmployeeState extends State<AddEmployee> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 35.0),
+                  padding: EdgeInsets.only(bottom: size.height * 0.03),
                   child: TextFormField(
                     style: textStyle,
                     controller: _password,
@@ -253,72 +313,71 @@ class _AddEmployeeState extends State<AddEmployee> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 35.0),
-                  child: TextFormField(
-                    style: textStyle,
-                    controller: _confirmedPassword,
-                    validator: _confirmPasswordValidator,
-                    obscureText: showPassword ? false : true,
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            showPassword = !showPassword;
-                          });
-                        },
-                        icon: Icon(
-                          Icons.remove_red_eye,
-                          color: showPassword ? Colors.blue : Colors.grey,
-                        ),
+                TextFormField(
+                  style: textStyle,
+                  controller: _confirmedPassword,
+                  validator: _confirmPasswordValidator,
+                  obscureText: showPassword ? false : true,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          showPassword = !showPassword;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.remove_red_eye,
+                        color: showPassword ? Colors.blue : Colors.grey,
                       ),
-                      contentPadding: EdgeInsets.only(bottom: 3),
-                      labelText: 'Confirm Password',
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
                     ),
+                    contentPadding: EdgeInsets.only(bottom: 3),
+                    labelText: 'Confirm Password',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                 ),
-                SizedBox(
-                  height: 35,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    OutlineButton(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: size.width * 0.1),
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(size.height * 0.025)),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("CANCEL",
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: size.height * 0.05),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      OutlineButton(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: size.width * 0.1),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(size.height * 0.025)),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("CANCEL",
+                            style: TextStyle(
+                                fontSize: 14,
+                                letterSpacing: 2.2,
+                                color: Colors.black)),
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            createEmployee();
+                          }
+                        },
+                        color: Colors.blue,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: size.width * 0.06),
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(size.height * 0.025)),
+                        child: Text(
+                          "Create Employee",
                           style: TextStyle(
                               fontSize: 14,
                               letterSpacing: 2.2,
-                              color: Colors.black)),
-                    ),
-                    RaisedButton(
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {}
-                      },
-                      color: Colors.blue,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: size.width * 0.06),
-                      elevation: 2,
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(size.height * 0.025)),
-                      child: Text(
-                        "Create Employee",
-                        style: TextStyle(
-                            fontSize: 14,
-                            letterSpacing: 2.2,
-                            color: Colors.white),
-                      ),
-                    )
-                  ],
+                              color: Colors.white),
+                        ),
+                      )
+                    ],
+                  ),
                 )
               ],
             ),

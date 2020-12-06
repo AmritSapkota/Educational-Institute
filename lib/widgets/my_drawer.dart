@@ -1,7 +1,9 @@
+import 'package:educational_institute/Screens/MainScreen.dart';
 import 'package:educational_institute/Screens/Student/about_us.dart';
 import 'package:educational_institute/Screens/Student/booked_class_form.dart';
 import 'package:educational_institute/Screens/Student/seminar_page.dart';
 import 'package:educational_institute/Screens/Student/settings.dart';
+import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:flutter/material.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -89,18 +91,29 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
           title: Text(
             ''
-            'Settings',
+            'LogOut',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.blue,
             ),
           ),
           onTap: () {
-            Navigator.push(context,
-                new MaterialPageRoute(builder: (context) => Setting()));
+            _logOut();
           },
         ),
       ]),
     );
+  }
+
+  void _logOut() {
+    //log out user and set preferences
+    AuthServices().signOut().then((value) {
+      //then place only one page in app i.e. main screen
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => MainScreen()),
+        (Route<dynamic> route) => route is MainScreen,
+      );
+    });
   }
 }

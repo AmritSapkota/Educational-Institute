@@ -102,6 +102,13 @@ class _ScheduleSeminarState extends State<ScheduleSeminar> {
       home: SafeArea(
         child: Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              color: Colors.white,
+              icon: Icon(Icons.arrow_back),
+              onPressed: (){
+                Navigator.pop(context);
+              },
+            ),
             title: Text('Schedule Seminar'),
           ),
           body: Stack(

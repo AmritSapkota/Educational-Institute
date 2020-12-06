@@ -24,7 +24,10 @@ class DatabaseService {
 
   Future<void> employeeToDatabase(EmployeeModel employee) async {
     try {
-      await cloudRef.collection('employee').doc().set(employee.toJason());
+      await cloudRef
+          .collection('employee')
+          .doc(employee.eId)
+          .set(employee.toJason());
       return;
     } on Exception catch (e) {
       print("failed to add data to firestore with e: $e");
@@ -71,7 +74,37 @@ class DatabaseService {
     return url;
   }
 
+  Future<bool> exist({String colletionId, String docuemntId}) async {
+    bool result = await cloudRef
+        .collection(colletionId)
+        .doc(docuemntId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        return true;
+      } else {
+        return false;
+      }
+    }).catchError(() {
+      return false;
+    });
+    return result;
+  }
+
   increaseReact(String id) {
     cloudRef.doc('post/$id').update({'reacts': FieldValue.increment(1)});
+  }
+
+  Future<void> updateEmployee(EmployeeModel employee) async {
+    try {
+      await cloudRef
+          .collection('employee')
+          .doc(employee.eId)
+          .update(employee.toJason());
+      return;
+    } on Exception catch (e) {
+      print(
+          "=========================failed to add data to firestore with e: $e=================");
+    }
   }
 }

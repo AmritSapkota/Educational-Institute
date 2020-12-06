@@ -17,7 +17,7 @@ class AuthProvider extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<AuthServices>(
-          create: (_) => AuthServices(FirebaseAuth.instance),
+          create: (_) => AuthServices(),
         ),
         StreamProvider(
           create: (context) => context.read()<AuthServices>().authStateChanges,
@@ -33,17 +33,13 @@ class AuthProvider extends StatelessWidget {
 class AuthWrapper extends StatelessWidget {
   void fromMainScreen(String buttonType, BuildContext context) async {
     if (buttonType == 'institute') {
-      //TODO: get student uid and then store it for the rest of the app till uninstall
-      //so that post will store uid in like section to show that this user has like the post
-      // and on the other hand this uid will help to log in user in student page or institute page
-      // when he/she opens app for second time
       Navigator.push(context,
           new MaterialPageRoute(builder: (context) => new InstituteLogIn()));
     } else {
-      //TODO: get student uid and then store it for the rest of the app till uninstall
-      //TODO: use shared prefs to store value and then
-      Navigator.push(context,
-          new MaterialPageRoute(builder: (context) => new StudentScreen()));
+      AuthServices().signInAnomously().then((value) {
+        Navigator.push(context,
+            new MaterialPageRoute(builder: (context) => new StudentScreen()));
+      });
     }
   }
 
@@ -52,20 +48,10 @@ class AuthWrapper extends StatelessWidget {
         context, new MaterialPageRoute(builder: (context) => new ManagePost()));
   }
 
-  // void fromInstituteScreenProfileSettings(BuildContext context) {
-  //   Navigator.push(context,
-  //       new MaterialPageRoute(builder: (context) => new ChangeProfile()));
-  // }
-
-  /*bool fromInstituteScreenAddPost(BuildContext context) {
-    Navigator.push(
-        context, new MaterialPageRoute(builder: (context) => new UploadPost()));
-  }*/
-
   Future<Widget> fromInstituteLogInScreen(
       BuildContext context, String mail, String pass) async {
     // ignore: unrelated_type_equality_checks
-    if (await AuthServices(FirebaseAuth.instance).singIn(mail, pass) == true) {
+    if (await AuthServices().singIn(mail, pass) == true) {
       Navigator.pop(context);
       Navigator.push(context,
           new MaterialPageRoute(builder: (context) => new InstituteScreen()));

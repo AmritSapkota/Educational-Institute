@@ -22,18 +22,16 @@ class _StudentInfoState extends State<StudentInfo> {
     return MaterialApp(
       home: SafeArea(
         child: Scaffold(
+
           bottomNavigationBar: BottomNavigationBar(
             items: [
               BottomNavigationBarItem(
                 icon: Icon(Icons.school),
-                title: Text('Applied To University'),
+                label: 'Applied To University',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
-                title: Text(
-                  'Booked Language Classes',
-                  //maxLines: 3,
-                ),
+                label: 'Booked Language Classes',
               ),
             ],
             currentIndex: _currentIndex,
@@ -45,6 +43,13 @@ class _StudentInfoState extends State<StudentInfo> {
             selectedItemColor: Colors.blue,
           ),
           appBar: AppBar(
+            leading: IconButton(
+              color: Colors.white,
+              icon: Icon(Icons.arrow_back),
+              onPressed: (){
+                Navigator.pop(context);
+              },
+            ),
             title: Text('Student Information'),
           ),
           body: _widgetOptions.elementAt(_currentIndex),

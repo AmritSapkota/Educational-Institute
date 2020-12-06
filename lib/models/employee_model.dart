@@ -1,7 +1,14 @@
 import 'package:flutter/cupertino.dart';
 
 class EmployeeModel {
-  String eId, email, firstName, lastName, address, phoneNumber, imageURL;
+  String eId,
+      email,
+      firstName,
+      lastName,
+      address,
+      phoneNumber,
+      imageURL,
+      userType;
 
   DateTime createdAt;
 
@@ -14,6 +21,7 @@ class EmployeeModel {
     @required this.phoneNumber,
     @required this.imageURL,
     @required this.createdAt,
+    @required this.userType,
   });
   Map<String, dynamic> toJason() {
     return {
@@ -25,6 +33,7 @@ class EmployeeModel {
       'phoneNo': phoneNumber,
       'imageURL': imageURL,
       'createdAt': createdAt,
+      'userType': userType,
     };
   }
 
@@ -36,6 +45,7 @@ class EmployeeModel {
     address = employee['address'];
     phoneNumber = employee['phoneNo'];
     imageURL = employee['imageURL'];
-    createdAt = employee['createdAt'];
+    createdAt = employee['createdAt'].toDate();
+    userType = employee['userType'];
   }
 }

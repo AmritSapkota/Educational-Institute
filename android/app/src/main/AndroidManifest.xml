@@ -8,7 +8,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         tools:replace="android:label"
-        android:name="android.support.multidex.MultiDexApplication"
+        android:name="androidx.multidex.MultiDexApplication"
         android:label="educational_institute"
         android:icon="@mipmap/ic_launcher">
         <activity

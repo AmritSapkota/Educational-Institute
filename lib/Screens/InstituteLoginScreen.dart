@@ -222,7 +222,7 @@ class _InstituteLogInState extends State<InstituteLogIn> {
                           ),
                           InkWell(
                             onTap: () async {
-                              await AuthServices(FirebaseAuth.instance)
+                              await AuthServices()
                                   .resetPassword(_email, context)
                                   .then((value) => showDialog(
                                         context: context,
