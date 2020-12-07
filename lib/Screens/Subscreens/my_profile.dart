@@ -5,6 +5,7 @@ import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/database_service.dart';
 import 'package:educational_institute/Services/shared_pref.dart';
 import 'package:educational_institute/models/employee_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {
@@ -26,27 +27,29 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot>(
-      //TODO: change User id to current user Id
-      future: FirebaseFirestore.instance
-          .collection('Employee')
-          .doc('QSzJfg4fafxqth1jaaWN')
-          .get(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Container(
-            color: Colors.white,
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        } else {
-          EmployeeModel user = EmployeeModel.fromJason(snapshot.data.data());
-          return MyProfile(
-            employee: user,
-          );
-        }
-      },
-    );
+        //TODO: change User id to current user Id
+        future:
+            FirebaseFirestore.instance.collection('employee').doc(userId).get(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container(
+              color: Colors.white,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else if (snapshot.connectionState == ConnectionState.done &&
+              snapshot.hasData) {
+            print(snapshot.data.data().toString());
+            print(FirebaseAuth.instance.currentUser.uid);
+            EmployeeModel user = EmployeeModel.fromJason(snapshot.data.data());
+            return MyProfile(
+              employee: user,
+            );
+          } else {
+            return Text("Something went wrong");
+          }
+        });
   }
 }
 
@@ -106,6 +109,7 @@ class _MyProfileState extends State<MyProfile> {
     if (_password.text.isNotEmpty) {
       _changeUserData(changePassword: true);
     } else {
+      //it will never executes
       _changeUserData(changePassword: false);
     }
   }
@@ -113,14 +117,15 @@ class _MyProfileState extends State<MyProfile> {
   _changeUserData({bool changePassword}) async {
     await DatabaseService().updateEmployee(widget.employee).then((value) {
       if (changePassword) {
-        AuthServices().changeCurrentUsersPassword(_password.text).then((value) {
-          showDialogBox('Success', 'password Updated');
-        }).catchError((e) {
+        AuthServices()
+            .changeCurrentUsersPassword(_password.text)
+            .then((value) {})
+            .catchError((e) {
           showDialogBox("Error", e.toString());
         });
       }
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MyProfile()));
+          context, MaterialPageRoute(builder: (context) => UserProfile()));
       showDialogBox('Success', 'User updated');
     }).catchError((e) {
       showDialogBox('Error', e.toString());
@@ -128,6 +133,15 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   bool showPassword = false;
+  @override
+  void initState() {
+    _fName.text = widget.employee.firstName;
+    _lName.text = widget.employee.lastName;
+    _email.text = widget.employee.email;
+    _address.text = widget.employee.address;
+    _phoneNo.text = widget.employee.phoneNumber;
+    _password.text = widget.employee.password;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,6 +175,11 @@ class _MyProfileState extends State<MyProfile> {
                       width: 130,
                       height: 130,
                       decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: widget.employee.imageURL != null
+                                ? NetworkImage("${widget.employee.imageURL}")
+                                : NetworkImage(
+                                    "https://firebasestorage.googleapis.com/v0/b/educational-institute-ca530.appspot.com/o/Capture.JPG?alt=media&token=5ea536a3-4e2a-4da9-a406-1fb2c3c148f6")),
                         border: Border.all(width: 4, color: Colors.blue),
                         boxShadow: [
                           BoxShadow(
@@ -171,16 +190,6 @@ class _MyProfileState extends State<MyProfile> {
                         ],
                         shape: BoxShape.circle,
                       ),
-                    ),
-                    CircleAvatar(
-                      radius: 30.0,
-                      backgroundImage: widget.employee.imageURL != null
-                          ? NetworkImage("${widget.employee.imageURL}")
-                          : Text(
-                              "${widget.employee.firstName[0].toUpperCase()}",
-                              style: TextStyle(fontSize: 40.0),
-                            ),
-                      backgroundColor: Colors.transparent,
                     ),
                     Positioned(
                         bottom: 0,
@@ -343,7 +352,6 @@ class _MyProfileState extends State<MyProfile> {
                       if (!currentFocus.hasPrimaryFocus) {
                         currentFocus.unfocus();
                       }
-
                       showDialog(
                           useRootNavigator: false,
                           context: context,

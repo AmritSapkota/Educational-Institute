@@ -37,8 +37,11 @@ class AuthWrapper extends StatelessWidget {
           new MaterialPageRoute(builder: (context) => new InstituteLogIn()));
     } else {
       AuthServices().signInAnomously().then((value) {
-        Navigator.push(context,
-            new MaterialPageRoute(builder: (context) => new StudentScreen()));
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (BuildContext context) => StudentScreen()),
+          (Route<dynamic> route) => route is StudentScreen,
+        );
       });
     }
   }

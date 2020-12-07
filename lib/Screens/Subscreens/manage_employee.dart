@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:educational_institute/Services/AuthentificationSerivce.dart';
 import 'package:educational_institute/Services/show_dialogue.dart';
+import 'package:educational_institute/models/employee_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ManageEmployee extends StatelessWidget {
   @override
@@ -14,20 +19,102 @@ class ManageEmployee extends StatelessWidget {
           },
         ),
       ),
-      body: ListView(
-        children: [
-          EmployeeAsList(),
-        ],
-      ),
+      body: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('employee').snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container(
+                color: Colors.transparent,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else if (snapshot.connectionState == ConnectionState.active) {
+              return ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot employee = snapshot.data.documents[index];
+                  return EmployeeAsList(
+                      employee: EmployeeModel.fromJason(employee.data()));
+                },
+              );
+              ;
+            } else {
+              return Container(
+                child: Center(
+                  child: Text('Something went wrong! '),
+                ),
+              );
+            }
+          }),
     );
   }
 }
 
 class EmployeeAsList extends StatelessWidget {
-  _deleteUser() {}
+  EmployeeModel employee;
+  EmployeeAsList({@required this.employee});
+
+  _deleteUser(context) {
+    print('signin as user');
+    AuthServices().singIn(employee.email, employee.password).then((value) {
+      print('deleting User from auth');
+      FirebaseAuth.instance.currentUser.delete().then((value) {
+        print('deleting User from database');
+        FirebaseFirestore.instance
+            .collection('employee')
+            .doc(employee.eId)
+            .delete()
+            .then((value) {
+          print('re authenticating as admin');
+          AuthServices().signInAsAdimAfterUserCreation().then((value) {
+            print('success');
+            Navigator.pop(context);
+            DialogServices().showSuccessDialog(context);
+          });
+        });
+      });
+    }).catchError((error) {
+      print('##############error: $error####################');
+      AuthServices().signInAsAdimAfterUserCreation();
+      // Fluttertoast.showToast(msg:'failed deleting user');
+    });
+  }
 
   String _imageURL =
       'https://images.pexels.com/photos/3307758/pexels-photo-3307758.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250';
+
+  showConfirmationDialog(context, confirmMessage) {
+    showDialog(
+        useRootNavigator: false,
+        context: context,
+        builder: (context) {
+          Widget cancelButton = FlatButton(
+            child: Text("Cancel"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          );
+          Widget continueButton = FlatButton(
+            child: Text("Continue"),
+            onPressed: () {
+              _deleteUser(context);
+            },
+          );
+          // set up the AlertDialog
+          AlertDialog alert = AlertDialog(
+            title: Text("Confirmation"),
+            content: Text(confirmMessage),
+            actions: [
+              cancelButton,
+              continueButton,
+            ],
+          );
+          return alert;
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +126,7 @@ class EmployeeAsList extends StatelessWidget {
           color: Colors.blue,
         ),
         onPressed: () {
-          DialogServices().showConfirmDialog(
-              context: context,
-              confirmMessage: 'Do you want to delete this user?',
-              onContinue: _deleteUser);
+          showConfirmationDialog(context, 'Do you want to delete this user?');
         },
       ),
       contentPadding: EdgeInsets.symmetric(vertical: size.height * 0.02),
@@ -62,11 +146,11 @@ class EmployeeAsList extends StatelessWidget {
             image: DecorationImage(
                 fit: BoxFit.scaleDown,
                 image: NetworkImage(
-                  _imageURL,
+                  employee.imageURL != null ? employee.imageURL : _imageURL,
                 ))),
       ),
       title: Text(
-        'Amrit Sharma',
+        employee.firstName + ' ' + employee.lastName,
         style: TextStyle(
           fontWeight: FontWeight.bold,
         ),

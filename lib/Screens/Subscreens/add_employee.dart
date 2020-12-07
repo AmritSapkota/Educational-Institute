@@ -101,6 +101,7 @@ class _AddEmployeeState extends State<AddEmployee> {
           imageURL: _imageURL,
           createdAt: DateTime.now(),
           eId: value,
+          password: _password.text,
         );
 
         //signout current user

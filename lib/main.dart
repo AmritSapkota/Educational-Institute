@@ -54,11 +54,12 @@ class _AppState extends State<App> {
 
         // if firebase installed and has network connection then we proceed, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return userType == 'student'
-              ? StudentScreen()
-              : userType == null
-                  ? MainScreen()
-                  : InstituteScreen();
+          return //ManageEmployee();
+              userType == 'student'
+                  ? StudentScreen()
+                  : userType == null
+                      ? MainScreen()
+                      : InstituteScreen();
         }
 
         // Otherwise, show something whilst waiting for initialization to complete

@@ -8,21 +8,22 @@ class EmployeeModel {
       address,
       phoneNumber,
       imageURL,
-      userType;
+      userType,
+      password;
 
   DateTime createdAt;
 
-  EmployeeModel({
-    @required this.email,
-    @required this.eId,
-    @required this.firstName,
-    @required this.lastName,
-    @required this.address,
-    @required this.phoneNumber,
-    @required this.imageURL,
-    @required this.createdAt,
-    @required this.userType,
-  });
+  EmployeeModel(
+      {@required this.email,
+      @required this.eId,
+      @required this.firstName,
+      @required this.lastName,
+      @required this.address,
+      @required this.phoneNumber,
+      @required this.imageURL,
+      @required this.createdAt,
+      @required this.userType,
+      @required this.password});
   Map<String, dynamic> toJason() {
     return {
       'eId': eId,
@@ -34,6 +35,7 @@ class EmployeeModel {
       'imageURL': imageURL,
       'createdAt': createdAt,
       'userType': userType,
+      'password': password
     };
   }
 
@@ -47,5 +49,6 @@ class EmployeeModel {
     imageURL = employee['imageURL'];
     createdAt = employee['createdAt'].toDate();
     userType = employee['userType'];
+    password = employee['password'];
   }
 }

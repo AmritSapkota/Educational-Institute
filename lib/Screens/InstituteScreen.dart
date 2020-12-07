@@ -215,7 +215,7 @@ class _InstituteScreenState extends State<InstituteScreen> {
                                     onPressed: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
-                                              builder: (_) => MyProfile()));
+                                              builder: (_) => UserProfile()));
                                     },
                                   ),
                                 )

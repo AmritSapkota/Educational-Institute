@@ -1,5 +1,6 @@
 import 'package:educational_institute/Services/database_service.dart';
 import 'package:educational_institute/Services/shared_pref.dart';
+import 'package:educational_institute/models/employee_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,10 @@ class AuthServices {
 
   Future<bool> signInAsAdimAfterUserCreation() async {
     return await singIn('admin@gmail.com', 'admin123');
+  }
+
+  Future<void> deleteEmployee(EmployeeModel employee) {
+    ;
   }
 
   Future<void> signInAnomously() async {
